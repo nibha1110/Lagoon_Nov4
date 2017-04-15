@@ -1,0 +1,17 @@
+//
+//  KillTable.swift
+//  Crocodile
+//
+//  Created by Nibha Aggarwal on 6/24/16.
+//  Copyright © 2016 Nibha Aggarwal. All rights reserved.
+//
+
+import Foundation
+import CoreData
+
+@objc(KillTable)
+class KillTable: NSManagedObject {
+
+// Insert code here to add functionality to your managed object subclass
+
+}

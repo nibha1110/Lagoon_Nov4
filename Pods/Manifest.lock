@@ -1,0 +1,20 @@
+PODS:
+  - Charts (2.3.1):
+    - Charts/Core (= 2.3.1)
+  - Charts/Core (2.3.1)
+  - MBProgressHUD (0.9.2)
+  - ReachabilitySwift (2.3.3)
+
+DEPENDENCIES:
+  - Charts (~> 2.3.0)
+  - MBProgressHUD
+  - ReachabilitySwift
+
+SPEC CHECKSUMS:
+  Charts: f04119c743c6996ba67fb8016d3a4878a38ca13f
+  MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
+  ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
+
+PODFILE CHECKSUM: ed70ddaabd1b291be3d613af022728b14c2f4ddb
+
+COCOAPODS: 1.1.1

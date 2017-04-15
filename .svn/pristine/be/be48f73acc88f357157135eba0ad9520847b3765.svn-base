@@ -1,0 +1,431 @@
+//
+//  UpdateRecheckVC.swift
+//  Crocodile
+//
+//  Created by Nibha Aggarwal on 6/9/16.
+//  Copyright © 2016 Nibha Aggarwal. All rights reserved.
+//
+
+import UIKit
+
+class UpdateRecheckVC: UIViewController, responseProtocol, EditCommentProtocol
+    
+{
+    var toPass_dic: NSMutableDictionary! = NSMutableDictionary()
+    var objwebservice : webservice! = webservice()
+    var objComment : EditCommentView! = EditCommentView()
+    var appDel : AppDelegate!
+    var str_webservice:String!
+    var str_condition: String!
+    var str_inspection: String!
+    var pickerLabel: UILabel!
+    var str_comment: String!
+    var Bool_comment: Bool = false
+    var dic_condition:NSMutableDictionary! = NSMutableDictionary()
+    var dic_inspect:NSMutableDictionary! = NSMutableDictionary()
+    var nullvalue: AnyObject = NSNull()
+    
+    @IBOutlet weak var picker_condition: UIPickerView!
+    @IBOutlet weak var picker_recheck: UIPickerView!
+    @IBOutlet weak var Label_penDetail: UILabel!
+    
+    //MARK: - Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        guard let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CommonClassVC") as? CommonClassVC
+            else {
+                fatalError();
+        }
+        appDel = (UIApplication.sharedApplication().delegate as! AppDelegate)
+        addChildViewController(controller)
+        controller.view.frame = CGRectMake(0, 0, 1024, 768)
+        controller.array_tableSection = ["update"]
+        controller.array_sectionRow = [[]]
+        view.addSubview(controller.view)
+        view.sendSubviewToBack(controller.view)
+        controller.label_header.text = "SP UPDATE"
+        controller.IIndexPath = NSIndexPath(forRow: 0, inSection: 5)
+        controller.array_temp_section.replaceObjectAtIndex(5, withObject: "Yes")
+        controller.tableMenu.reloadData()
+        
+        
+        objComment = EditCommentView.instanceFromNib() as! EditCommentView
+        objComment?.delegate = self
+        
+        objwebservice?.delegate = self
+        
+        Label_penDetail.text = "\((toPass_dic["PenDetails"]![0]["groupcodedisp"] as! String)+" "+(toPass_dic["PenDetails"]![0]["pennodisp"] as! String))"
+        
+        let strTemp : String!
+        strTemp = "\(toPass_dic["PenDetails"]![0]["comment"])"
+        print(strTemp)
+        if (strTemp == "Optional(<null>)") || (strTemp == nil) {
+            
+        }
+        else
+        {
+            str_comment = "\(toPass_dic["PenDetails"]![0]["comment"] as! String)"
+        }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        self.GetAllGeneralDetailService()
+    }
+    
+    
+    //MARK: - get All Data
+    func GetAllGeneralDetailService()
+    {
+        if self.appDel.checkInternetConnection()
+        {
+            str_webservice = "getgeneraldetails"
+            appDel.Show_HUD()
+            let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/singlepen/getgeneraldetails.php")!)
+            let postString = ""
+            objwebservice.callServiceCommon(request, postString: postString)
+            
+        }
+    }
+    
+    // MARK: - get All detail Service No use
+    func GetAllConditonDetailService()
+    {
+        appDel.Show_HUD()
+        str_webservice = "getcondition"
+        let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/singlepen/getcondition.php")!)
+        let postString = ""
+        objwebservice.callServiceCommon(request, postString: postString)
+    }
+    
+    func GetAllInspectedDetailService()
+    {
+        appDel.Show_HUD()
+        str_webservice = "getinspection"
+        let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/singlepen/getinspection.php")!)
+        let postString = ""
+        objwebservice.callServiceCommon(request, postString: postString)
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    // MARK: - Webservice NetLost delegate
+    func NetworkLost(str: String!)
+    {
+        if str == "netLost" {
+            
+            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+        else if (str == "noResponse")
+        {
+            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+    }
+    
+    
+    //MARK: - ALL Response
+    func conditionResponse(dic: NSMutableDictionary)
+    {
+        self.dic_condition = dic["general_details"]![0] as AnyObject as! NSMutableDictionary
+        self.str_condition = dic["general_details"]![0]["Condition_data"]!![0]["conditionid"] as! String
+        self.picker_condition.selectRow(0, inComponent: 0, animated: true)
+        self.picker_condition.reloadAllComponents()
+    }
+    
+    func inspectionResponse(dic: NSMutableDictionary)
+    {
+        self.dic_inspect = dic["general_details"]![1] as AnyObject as! NSMutableDictionary
+        if dic["general_details"]![1]["inspection_data"]!!.count > 7 {
+            
+            self.str_inspection = dic["general_details"]![1]["inspection_data"]!![7]["inspect_id"] as! String
+            self.picker_recheck.selectRow(0, inComponent: 0, animated: true)
+            self.picker_recheck.reloadAllComponents()
+            
+        }
+        else
+        {
+            self.str_inspection = dic["general_details"]![1]["inspection_data"]!![0]["inspect_id"] as! String
+            self.picker_recheck.selectRow(0, inComponent: 0, animated: true)
+            self.picker_recheck.reloadAllComponents()
+        }
+        
+    }
+    
+    
+    
+    // MARK: - Webservice Delegate
+    func responseDictionary(dic: NSMutableDictionary) {
+        
+        //        dispatch_async(dispatch_get_main_queue()) {
+        if (self.str_webservice == "getgeneraldetails")
+        {
+            self.conditionResponse(dic)
+            self.inspectionResponse(dic)
+            
+        }
+            
+            
+            
+        else if self.str_webservice == "getcondition" {
+            self.dic_condition = dic
+            self.str_condition = dic["condition"]![0]["conditionid"] as! String
+            self.picker_condition.selectRow(0, inComponent: 0, animated: true)
+            self.picker_condition.reloadAllComponents()
+            self.GetAllInspectedDetailService()
+        }
+            //////////
+        else if self.str_webservice == "getinspection" {
+            self.dic_inspect = dic
+            if dic["inspection"]?.count > 7 {
+                self.str_inspection = dic["inspection"]![7]["inspect_id"] as! String
+                self.picker_recheck.selectRow(7, inComponent: 0, animated: true)
+                self.picker_recheck.reloadAllComponents()
+            }
+            else
+            {
+                self.str_inspection = dic["inspection"]![0]["inspect_id"] as! String
+                self.picker_recheck.selectRow(0, inComponent: 0, animated: true)
+                self.picker_recheck.reloadAllComponents()
+            }
+            
+        }
+            //////////
+        else if (self.str_webservice == "updatedata")
+        {
+            if (dic["success"] as! String == "False")
+            {
+                let alertView = UIAlertController(title: nil, message: "Pen Already Allocated\n Please Select Another Pen", preferredStyle: .Alert)
+                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                self.presentViewController(alertView, animated: true, completion: nil)
+            }
+            else
+            {
+                let alertView = UIAlertController(title: nil, message: "Successfully Updated Values.", preferredStyle: .Alert)
+                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action:UIAlertAction) in
+                    self.navigationController?.popViewControllerAnimated(false)
+                }));
+                self.presentViewController(alertView, animated: true, completion: nil)
+            }
+        }
+            //////////
+        else if self.str_webservice == "movetokill_list" {
+            print(dic)
+            if dic["Message"] as! String == "Successfully added to kill list" {
+                let alertView = UIAlertController(title: nil, message: "Successfully Added To Kill List.", preferredStyle: .Alert)
+                let OKAction = UIAlertAction(title: "OK", style: .Cancel) { (action: UIAlertAction) in
+                    // pop here
+                    self.navigationController?.popViewControllerAnimated(false)
+                }
+                alertView.addAction(OKAction)
+                self.presentViewController(alertView, animated: true, completion: nil)
+            }
+        }
+        //        }
+        //        dispatch_async(dispatch_get_main_queue()) {
+        self.appDel.remove_HUD()
+        //        }
+    }
+    
+    //MARK:- MoveTo_BtnAction
+    @IBAction func MoveTo_BtnAction(sender: AnyObject) {
+        if self.appDel.checkInternetConnection() {
+            self.performSegueWithIdentifier("toUpdateMove", sender: self)
+        }
+        else
+        {
+            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+        }
+    }
+    
+    //MARK: - Add to Kill List
+    @IBAction func AddToKillList(sender: AnyObject) {
+        if self.appDel.checkInternetConnection()  {
+            //            dispatch_async(dispatch_get_main_queue()) {
+            let alertView = UIAlertController(title: nil, message: "Are You Sure You Want To Add To Kill List?", preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "NO", style: .Cancel, handler: nil))
+            alertView.addAction(UIAlertAction(title: "YES", style: .Default, handler: {(action:UIAlertAction) in
+                self.AddToKillListService()
+            }));
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            //            }
+        }
+        else
+        {
+            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+        }
+        
+    }
+    
+    func AddToKillListService()
+    {
+        appDel.Show_HUD()
+        str_webservice = "movetokill_list";
+        let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/sp_inspection/movetokill_list.php?")!)
+        let postString = "penid=\(toPass_dic["PenDetails"]![0]["penid"] as! String)&addedby=\(NSUserDefaults.standardUserDefaults().objectForKey("email_username") as! String)&app_id=\(NSUserDefaults.standardUserDefaults().objectForKey("ApplicationIdentifier") as! String)"
+        objwebservice.callServiceCommon(request, postString: postString)
+        
+    }
+    
+    //MARK: - Save Button Action
+    @IBAction func Save_BtnAction(sender: AnyObject) {
+        if self.appDel.checkInternetConnection() {
+            let alertView = UIAlertController(title: nil, message: "Are You Sure You Want To Update Values.", preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "NO", style: .Cancel, handler: nil))
+            alertView.addAction(UIAlertAction(title: "YES", style: .Default, handler: {(action:UIAlertAction) in
+                self.AddingToRecheck_save()
+            }));
+            self.presentViewController(alertView, animated: true, completion: nil)
+        }
+        else
+        {
+            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+        }
+        
+    }
+    
+    
+    
+    func AddingToRecheck_save()
+    {
+        let GpCode: String = toPass_dic["PenDetails"]![0]["groupcode"] as! String
+        let arraytemp = "\(toPass_dic["PenDetails"]![0]["pennodisp"] as! String)".componentsSeparatedByString("-")
+        let xx: String = "\(arraytemp[0])"
+        let yy: String! = "\(arraytemp[1])"
+        let penid: String = toPass_dic["PenDetails"]![0]["penid"] as! String
+        
+        
+        appDel.Show_HUD()
+        str_webservice = "updatedata";
+        let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/sp_update/updatedata.php?")!)
+        let postString = "groupcode=\(GpCode)&namexx=\(xx)&nameyy=\(yy)&penid=\(penid)&allocationid=\(toPass_dic["PenDetails"]![0]["allocationid"] as! String)&inspectid=\(str_inspection)&conditionid=\(str_condition)&comment=\(str_comment)&app_id=\(NSUserDefaults.standardUserDefaults().objectForKey("ApplicationIdentifier") as! String)"
+        objwebservice.callServiceCommon(request, postString: postString)
+    }
+    
+    //MARK: - Comment Btn Action
+    @IBAction func textComment_BtnAction(sender: AnyObject) {
+    }
+    
+    // MARK: - PickerView Delegates
+    func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int{
+        return 1
+    }
+    
+    // returns the # of rows in each component..
+    func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int{
+        if pickerView == picker_condition {
+            if dic_condition.count != 0 {
+                return (dic_condition["Condition_data"]?.count)!
+            }
+        }
+        else if pickerView == picker_recheck {
+            if dic_inspect.count != 0 {
+                return (dic_inspect["inspection_data"]?.count)!
+            }
+            
+        }
+        return 0
+    }
+    
+    
+    func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 57
+    }
+    
+    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView) -> UIView {
+        pickerLabel = (view as! UILabel)
+        if pickerLabel == nil {
+            let frame: CGRect = CGRectMake(10, 0, 250, 65)
+            pickerLabel = UILabel(frame: frame)
+            pickerLabel.textAlignment = .Center
+            pickerLabel.backgroundColor = UIColor.clearColor()
+            pickerLabel.textColor = UIColor.whiteColor()
+            pickerLabel.font = UIFont(name: "HelveticaNeue", size: 35)
+        }
+        if pickerView == picker_condition {
+            pickerLabel.text = dic_condition["Condition_data"]![row]["conditionname"] as? String
+        }
+        else if pickerView == picker_recheck {
+            pickerLabel.text = dic_inspect["inspection_data"]![row]["inspect_period"] as? String
+        }
+        return pickerLabel
+        
+        
+    }
+    
+    
+    func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
+    {
+        if pickerView == picker_condition {
+            str_condition = dic_condition["Condition_data"]![row]["conditionid"] as! String
+        }
+        else if pickerView == picker_recheck {
+            str_inspection = dic_inspect["inspection_data"]![row]["inspect_id"] as? String
+        }
+    }
+    
+    @IBAction func Back_btnAction(sender: AnyObject)
+    {
+        
+    }
+    
+    // MARK: - Navigation
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (segue.identifier == "toUpdateMove") {
+            
+            let objVC = segue.destinationViewController as! UpdateMoveSelect;
+            objVC.toPassToAnother_dic = toPass_dic
+            print(objVC.toPassToAnother_dic)
+        }
+    }
+    
+    //MARK: - Comment Btn_Action/ EditComment Delegate
+    @IBAction func Comment_BtnAction(sender: AnyObject) {
+        if !Bool_comment {
+            objComment.textView_comment.text = ""
+            if (str_comment != "<null>" || str_comment != nil)
+            {
+                objComment.textView_comment.text = str_comment
+            }
+            objComment.showCommentView(self.view, frame1: CGRectMake(0, 0, 1024, 768))
+            Bool_comment = true
+        }
+        else {
+            objComment.removeCommentView(self.view)
+            Bool_comment = false
+        }
+    }
+    
+    func cancelComment() {
+        Bool_comment = false
+        objComment.removeCommentView(self.view)
+    }
+    
+    
+    func DoneComment(textview: String!) {
+        Bool_comment = false
+        objComment.removeCommentView(self.view)
+        str_comment = textview
+        
+    }
+    
+}

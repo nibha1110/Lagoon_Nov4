@@ -1,0 +1,519 @@
+//
+//  CommunityReport.swift
+//  Crocodile
+//
+//  Created by Nibha Aggarwal on 5/19/16.
+//  Copyright © 2016 Nibha Aggarwal. All rights reserved.
+//
+
+import UIKit
+import CoreData
+
+class CommunityReportVC: UIViewController , responseProtocol, userlistProtocol, CommonClassProtocol{
+    
+    var objwebservice : webservice! = webservice()
+    var objuserList : UserListView! = UserListView()
+    var str_webservice: String!
+    var Bool_viewUsers: Bool = false
+    var Bool_viewcalendar: Bool = false
+    var appDel : AppDelegate!
+    var pickerLabel: UILabel!
+    @IBOutlet weak var label_penNo: UILabel!
+    @IBOutlet weak var label_totalPens: UILabel!
+    
+    @IBOutlet weak var label_AnimalsY2: UILabel!
+    @IBOutlet weak var label_AnimalsY3: UILabel!
+    @IBOutlet weak var label_AnimalsY4: UILabel!
+    var str_totalPen: String!
+
+    @IBOutlet var picker_pen1: UIPickerView!
+    @IBOutlet var picker_pen2: UIPickerView!
+    @IBOutlet var picker_group: UIPickerView!
+    @IBOutlet weak var view_GoPen: UIView!
+    @IBOutlet weak var btn_backW: UIButton!
+    var str_name_1: NSString!
+    var str_name_2: NSString!
+    var str_name_group: NSString!
+    var str_todatDate: NSString!
+    
+    var array_Group: NSMutableArray = []
+    var array_SinglePens: NSMutableArray = []
+    var array_X : NSMutableArray = []
+    var controller1: CommonClassVC! = CommonClassVC()
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        guard let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CommonClassVC") as? CommonClassVC
+            else {
+                fatalError();
+        }
+        addChildViewController(controller)
+        controller.view.frame = CGRectMake(0, 0, 1024, 768)
+        controller.array_tableSection = ["report"]
+        controller.array_sectionRow = [["sddreport", "killreport", "gradingreport", "aging", "spinuserepoert",  "Community_Pens_Report_Unsel", "Diereport_unselect", "Readyreport_unselect", "aging"]]
+        view.addSubview(controller.view)
+        view.sendSubviewToBack(controller.view)
+        controller.label_header.text = "COMMUNITY PENS REPORT"
+        controller.IIndexPath = NSIndexPath(forRow: 5, inSection: 6)
+        controller.array_temp_section.replaceObjectAtIndex(6, withObject: "Yes")
+        controller.tableMenu.reloadData()
+        controller.tableMenu.contentOffset = CGPointMake(0, 76) // to show Die Report tab
+        
+        let arrt = controller.array_temp_row[6]
+        arrt.replaceObjectAtIndex(5, withObject: "Yes")
+        
+        
+        appDel = (UIApplication.sharedApplication().delegate as! AppDelegate)
+        controller.btn_Sync.hidden = false
+        controller.img_Sync.hidden = false
+        controller.btn_BackPop.hidden = true
+        objwebservice?.delegate = self
+        
+        controller.delegate = self
+        
+        objuserList = UserListView.instanceFromNib() as! UserListView
+        objuserList?.delegate = self
+        
+        for i in 1 ..< 5{
+            array_Group.addObject("Y\(i)")
+        }
+        
+        for char in "ABCDEFGHIJKLMNOP".characters {
+            array_X.addObject("\(char)")
+        }
+        
+        for i in 1 ..< 11{
+            array_SinglePens.addObject("\(i)")
+        }
+        picker_group.reloadAllComponents()
+        picker_group.selectRow(0, inComponent: 0, animated: true)  //Y1
+        
+        picker_pen1.reloadAllComponents()
+        picker_pen1.selectRow(0, inComponent: 0, animated: true)  //A
+        
+        picker_pen2.reloadAllComponents()
+        picker_pen2.selectRow(0, inComponent: 0, animated: true)  //1
+        str_name_group = array_Group[0] as! String
+        str_name_1 = array_X[0] as! String
+        str_name_2 = array_SinglePens[0] as! String
+        
+        btn_backW.hidden = true
+        
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+
+    // MARK: - PickerView Delegates
+    func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int{
+        return 1
+    }
+    
+    // returns the # of rows in each component..
+    func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int{
+        
+        if pickerView == picker_group{
+            return array_Group.count
+        }
+        else if (pickerView == picker_pen1){
+            return array_X.count
+        }
+        else if (pickerView == picker_pen2){
+            return array_SinglePens.count
+        }
+        return 0
+    }
+    
+    
+    func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 57
+    }
+    
+    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView) -> UIView {
+        pickerLabel = (view as! UILabel)
+        if pickerLabel == nil {
+            let frame: CGRect = CGRectMake(10, 0, 250, 65)
+            pickerLabel = UILabel(frame: frame)
+            pickerLabel.textAlignment = .Center
+            pickerLabel.backgroundColor = UIColor.clearColor()
+            pickerLabel.textColor = UIColor.whiteColor()
+            pickerLabel.font = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 30), size: 30.0)
+        }
+        if pickerView == picker_group {
+            pickerLabel.text = array_Group[row] as? String
+        }
+        else if (pickerView == picker_pen1){
+            pickerLabel.text = array_X[row] as? String
+        }
+        else if (pickerView == picker_pen2){
+            pickerLabel.text = array_SinglePens[row] as? String
+        }
+        
+        return pickerLabel
+    }
+    
+    func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
+    {
+        if pickerView == picker_group {
+            str_name_group = array_Group[row] as! String
+        }
+        else if pickerView == picker_pen1
+        {
+            str_name_1 = array_X[row] as! String
+        }
+        else if pickerView == picker_pen2
+        {
+            str_name_2 = array_SinglePens[row] as! String
+        }
+        return
+        
+        var max1: Int = 0
+        var max2: Int = 0
+        var max3: Int = 0
+        
+        var rowIndex: Int = row
+        
+        if pickerView == picker_group {
+            str_name_group = array_Group[row] as! NSString
+            picker_pen1.selectRow(0, inComponent: 0, animated: true)
+            str_name_1 = array_X[0] as! NSString
+            picker_pen2.selectRow(0, inComponent: 0, animated: true)
+            str_name_2 = array_SinglePens[0] as! NSString
+        }
+        
+        //
+        if str_name_group == "Y1" {
+            max1 = 2
+            max2 = 0
+            max3 = 9
+            if pickerView == picker_pen1 {
+                if row > max1 {
+                    rowIndex = max1
+                    pickerView.selectRow(max1, inComponent: 0, animated: true)
+                    if picker_pen2.selectedRowInComponent(0) > max2 {
+                        picker_pen2.selectRow(max2, inComponent: 0, animated: true)
+                        str_name_2 = array_SinglePens[max2] as! NSString
+                        
+                    }
+                    
+                }
+                else if row == max1 {
+                    picker_pen2.selectRow(max2, inComponent: 0, animated: true)
+                    
+                }
+                str_name_1 = array_SinglePens[rowIndex] as! NSString
+            }
+            else if pickerView == picker_pen2 {
+                if picker_pen1.selectedRowInComponent(0) == max1 {
+                    if row > max2 {
+                        rowIndex = max2
+                        pickerView.selectRow(max2, inComponent: 0, animated: true)
+                        
+                    }
+                }
+                str_name_2 = array_SinglePens[rowIndex] as! NSString
+            }
+            
+        }
+        else if(str_name_group == "Y2")
+        {
+            max1 = 0
+            max2 = 8
+            max3 = 5
+            if pickerView == picker_pen1 {
+                if row > max1 {
+                    rowIndex = max1
+                    pickerView.selectRow(max1, inComponent: 0, animated: true)
+                    if picker_pen2.selectedRowInComponent(0) > max2 {
+                        picker_pen2.selectRow(max2, inComponent: 0, animated: true)
+                        str_name_2 = array_SinglePens[max2] as! NSString
+                       
+                    }
+                }
+                str_name_1 = array_SinglePens[rowIndex] as! NSString
+            }
+            else if pickerView == picker_pen2 {
+                if picker_pen1.selectedRowInComponent(0) == max1 {
+                    if row > max2 {
+                        rowIndex = max2
+                        pickerView.selectRow(max2, inComponent: 0, animated: true)
+                        
+                    }
+                }
+                
+                str_name_2 = array_SinglePens[rowIndex] as! NSString
+            }
+            
+        }
+        else if(str_name_group == "Y3")
+        {
+            max1 = 0;
+            max2 = 5;
+            max3 = 8;
+            if (pickerView == picker_pen1)
+            {
+                if(row > max1){
+                    rowIndex = max1
+                    pickerView.selectRow(max1, inComponent: 0, animated: true)
+                    if picker_pen2.selectedRowInComponent(0) > max2 {
+                        picker_pen2.selectRow(max2, inComponent: 0, animated: true)
+                        str_name_2 = array_SinglePens[max2] as! NSString
+                        
+                    }
+                    
+                }
+                str_name_1 = array_SinglePens[rowIndex] as! NSString
+                
+                
+                
+            }
+            else if (pickerView == picker_pen2)
+            {
+                if picker_pen1.selectedRowInComponent(0) == max1 {
+                    if row > max2 {
+                        rowIndex = max2
+                        pickerView.selectRow(max2, inComponent: 0, animated: true)
+                        
+                    }
+                }
+                
+                
+                
+                str_name_2 = array_SinglePens[rowIndex] as! NSString
+                
+            }
+            
+        }
+        else if(str_name_group == "Y4")
+        {
+            max1 = 0;
+            max2 = 7;
+            max3 = 6;
+            if pickerView == picker_pen1 {
+                if row > max1 {
+                    rowIndex = max1
+                    pickerView.selectRow(max1, inComponent: 0, animated: true)
+                    if picker_pen2.selectedRowInComponent(0) > max2 {
+                        picker_pen2.selectRow(max2, inComponent: 0, animated: true)
+                        str_name_2 = array_SinglePens[max2] as! NSString
+                        
+                    }
+                }
+                str_name_1 = array_SinglePens[rowIndex] as! NSString
+            }
+            else if pickerView == picker_pen2 {
+                if picker_pen1.selectedRowInComponent(0) == max1 {
+                    if row > max2 {
+                        rowIndex = max2
+                        pickerView.selectRow(max2, inComponent: 0, animated: true)
+                        
+                    }
+                }
+                
+                
+                str_name_2 = array_SinglePens[rowIndex] as! NSString
+                
+            }
+            
+            
+        }
+    }
+    
+    //MARK: - Export Btn_Action/ UserList Delegate
+    @IBAction func Export_BtnAction(sender: AnyObject) {
+        if !Bool_viewUsers {
+            objuserList.showView(self.view, frame1: CGRectMake(677, 205, 318, 231))
+            Bool_viewUsers = true
+        }
+        else {
+            objuserList.removeView(self.view)
+            Bool_viewUsers = false
+        }
+    }
+    
+    
+    func cancelMethod() {
+        Bool_viewUsers = false
+        objuserList.removeView(self.view)
+    }
+    
+    
+    func DoneMethod(EmailUsers: String!) {
+        
+        if EmailUsers == nil {
+//            dispatch_async(dispatch_get_main_queue())
+//            {
+                let alertView = UIAlertController(title: nil, message: "Please Select User.", preferredStyle: .Alert)
+                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                self.presentViewController(alertView, animated: true, completion: nil)
+//            }
+        }
+        else
+        {
+            Bool_viewUsers = false
+            objuserList.removeView(self.view)
+            if self.appDel.checkInternetConnection() {
+                str_webservice = "report_community_pens"
+                appDel.Show_HUD()
+                let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/file/report_community_pens.php?")!)
+                let postString = "tomail=\(EmailUsers)&namexx=\(str_name_group)&nameyy=\(str_totalPen)"
+                objwebservice.callServiceCommon_inspection(request, postString: postString)
+            }
+            else
+            {
+//                dispatch_async(dispatch_get_main_queue()) {
+                    let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
+                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                    self.presentViewController(alertView, animated: true, completion: nil)
+//                }
+            }
+        }
+    }
+    
+    //MARK: - Go Button
+    @IBAction func Go_BtnAction(sender: AnyObject) {
+        str_totalPen = "\(str_name_1)\(str_name_2)"
+        //        if (str_totalPen == "000")
+        //        {
+        //            let alertView = UIAlertController(title: nil, message: "Invalid Pen", preferredStyle: .Alert)
+        //            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+        //            self.presentViewController(alertView, animated: true, completion: nil)
+        //        }
+        //        else
+        //        {
+        //[NSString stringWithFormat:@"Total Animals in Pen %@-%@ :-", str_Hatchling, str_TotalPen];
+        self.checkPenAvailable()
+        //        }
+    }
+    
+    
+    func checkPenAvailable()
+    {
+        let fetchRequest1 = NSFetchRequest(entityName: "AnimalsCountTable")
+        let predicate1 = NSPredicate(format: "count_namexx = '\(self.str_name_1)' and count_nameyy = '\(self.str_name_2)' and groupname = '\(self.str_name_group)'")
+        fetchRequest1.predicate = predicate1
+        fetchRequest1.returnsObjectsAsFaults = false
+        fetchRequest1.fetchBatchSize = 20
+        do {
+            let results1 = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest1)
+            if results1.count > 0 {
+                view_GoPen.hidden = true
+                btn_backW.hidden = false
+                label_penNo.text = "Total Animals in Pen \(str_name_group)-\(str_totalPen) :-"
+                self.getCommnunityReportService()
+            }
+            else
+            {
+                let alertView = UIAlertController(title: nil, message: "Entered Pen Does not Exist.", preferredStyle: .Alert)
+                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                self.presentViewController(alertView, animated: true, completion: nil)
+            }
+        }
+        catch{}
+    }
+    
+    
+    func getCommnunityReportService()
+    {
+        appDel.Show_HUD()
+        str_webservice = "communityPens"
+        
+        let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/sp_reports/communityPens.php?")!)
+        let postString = "groupcode=\(str_name_group)&namexx=\(str_name_1)&nameyy=\(str_name_2)"
+        objwebservice.callServiceCommon(request, postString: postString)
+    }
+    
+    //MARK: - CommonClass Delegate
+    func responseCommonClassOffline() {
+        self.viewDidAppear(false)
+    }
+    
+    // MARK: - Webservice NetLost delegate
+    func NetworkLost(str: String!)
+    {
+        if str == "netLost" {
+            
+            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+        else if (str == "noResponse")
+        {
+            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+    }
+    
+    //MARK: - webservice Delegate
+    func responseDictionary(dic: NSMutableDictionary) {
+        print(dic)
+//        dispatch_async(dispatch_get_main_queue()) {
+            if (self.str_webservice == "communityPens")
+            {
+                self.label_totalPens.text = dic["Details"]![0]["total_animals"] as? String
+                if (self.label_totalPens.text == nil)
+                {
+                    self.label_totalPens.text = "0"
+                }
+                self.label_AnimalsY2.text = dic["Details"]![1]["y2_total"] as? String
+                self.label_AnimalsY3.text = dic["Details"]![1]["y3_total"] as? String
+                self.label_AnimalsY4.text = dic["Details"]![1]["y4_total"] as? String
+                
+                if (self.label_totalPens.text == nil)
+                {
+                    self.label_totalPens.text = "0"
+                }
+                if (self.label_AnimalsY2.text == nil)
+                {
+                    self.label_AnimalsY2.text = "0"
+                }
+                if (self.label_AnimalsY3.text == nil)
+                {
+                    self.label_AnimalsY3.text = "0"
+                }
+                if (self.label_AnimalsY4.text == nil)
+                {
+                    self.label_AnimalsY4.text = "0"
+                }
+                self.appDel.remove_HUD()
+            }
+            else if (self.str_webservice == "report_community_pens")
+            {
+                var msg: String!
+                if dic["success"] as! String == "True" {
+                    msg = "Mail Sent."
+                }
+                else
+                {
+                    msg = "Mail Not Sent."
+                }
+//                dispatch_async(dispatch_get_main_queue()) {
+                    let alertView = UIAlertController(title: nil, message: msg, preferredStyle: .Alert)
+                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                    self.presentViewController(alertView, animated: true, completion: nil)
+//                }
+                self.appDel.remove_HUD()
+            }
+//        }
+    }
+    
+    
+    //MARK: - Back Button
+    @IBAction func Back_BtnAction(sender: AnyObject) {
+        view_GoPen.hidden = false
+        btn_backW.hidden = true
+        cancelMethod()
+    }
+
+}

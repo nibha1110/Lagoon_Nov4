@@ -1,0 +1,6 @@
+framework module Pods_CrocodileUITests {
+  umbrella header "Pods-CrocodileUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

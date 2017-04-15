@@ -1,0 +1,409 @@
+//
+//  TrailerToSPListVC.swift
+//  Crocodile
+//
+//  Created by Nibha Aggarwal on 10/15/16.
+//  Copyright © 2016 Nibha Aggarwal. All rights reserved.
+//
+
+
+
+import UIKit
+import CoreData
+
+class TrailerToSPListVC: UIViewController, responseProtocol {
+    
+    @IBOutlet weak var tabelview_GrpList: UITableView!
+    var objuserList : UserListView! = UserListView()
+    var objwebservice : webservice! = webservice()
+    var appDel : AppDelegate!
+    var array_List: [AnyObject] = []
+    var str_webservice: NSString!
+    var toPass: String!
+    var index: Int! = 0
+    
+    var Bool_viewUsers: Bool = false
+    
+    //MARK: - Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        appDel = (UIApplication.sharedApplication().delegate as! AppDelegate)
+        guard let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CommonClassVC") as? CommonClassVC
+            else {
+                fatalError();
+        }
+        addChildViewController(controller)
+        controller.view.frame = CGRectMake(0, 0, 1024, 768)
+        controller.array_tableSection = ["add"]
+        controller.array_sectionRow = [["SP_ADD_unselected", "Load_to_trailer", "Trailer_to SP_unselected", "All_empty_pens", "Add_animal_unselected"]]
+        view.addSubview(controller.view)
+        view.sendSubviewToBack(controller.view)
+        controller.IIndexPath = NSIndexPath(forRow: 2, inSection: 2)
+        controller.btn_BackPop.hidden = true
+        controller.label_header.text = "TRAILER TO SP"
+        controller.array_temp_section.replaceObjectAtIndex(2, withObject: "Yes")
+        controller.tableMenu.reloadData()
+        let arrt = controller.array_temp_row[2]
+        arrt.replaceObjectAtIndex(2, withObject: "Yes")
+        
+        objwebservice?.delegate = self
+        
+        
+    }
+    
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        if self.appDel.checkInternetConnection() {
+            self.GetTrailerList()
+        }
+        else
+        {
+        }
+    }
+    
+    
+    //MARK: - Export Btn_Action/ UserList Delegate
+    @IBAction func Export_BtnAction(sender: AnyObject) {
+        
+        if !Bool_viewUsers {
+            objuserList.showView(self.view, frame1: CGRectMake(677, 205, 318, 231))
+            Bool_viewUsers = true
+        }
+        else {
+            objuserList.removeView(self.view)
+            Bool_viewUsers = false
+        }
+    }
+    
+    func cancelMethod() {
+        Bool_viewUsers = false
+        objuserList.removeView(self.view)
+    }
+    
+    
+    func DoneMethod(EmailUsers: String!) {
+        Bool_viewUsers = false
+        objuserList.removeView(self.view)
+        
+        if EmailUsers == nil {
+            //            dispatch_async(dispatch_get_main_queue())
+            //            {
+            let alertView = UIAlertController(title: nil, message: "Please Select User.", preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            //            }
+        }
+        else
+        {
+            
+            if self.appDel.checkInternetConnection() {
+                appDel.Show_HUD()
+                str_webservice = "report_sp_add"
+                
+                let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/file/report_sp_add.php?")!)
+                let postString = "grpcode=\(toPass)&tomail=\(EmailUsers)"
+                objwebservice.callServiceCommon_inspection(request, postString: postString)
+            }
+            else
+            {
+                //                dispatch_async(dispatch_get_main_queue()) {
+                let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
+                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                self.presentViewController(alertView, animated: true, completion: nil)
+                //                }
+            }
+        }
+        
+    }
+    
+   
+    // MARK: - Webservice NetLost delegate
+    func NetworkLost(str: String!)
+    {
+        if str == "netLost" {
+            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+        else if (str == "noResponse")
+        {
+            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+    }
+    
+    
+    
+    // MARK: - Webservice delegate
+    func responseDictionary(dic: NSMutableDictionary) {
+        if str_webservice == "getlistload" {
+            
+            self.array_List = dic["trailer_list"] as! NSMutableArray as [AnyObject]
+            self.tabelview_GrpList.reloadData()
+        }
+            
+        else if (str_webservice == "revertlot")
+        {
+            let alertView = UIAlertController(title: nil, message: dic["Message"] as? String, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action:UIAlertAction) in
+                if dic["success"] as! String == "True" {
+                    self.GetTrailerList()
+                }
+            }));
+            
+            self.presentViewController(alertView, animated: true, completion: nil)
+        }
+        else if (str_webservice == "report_sp_add")
+        {
+            var msg: String!
+            if dic["success"] as! String == "True" {
+                msg = "Mail Sent."
+            }
+            else
+            {
+                msg = "Mail Not Sent."
+            }
+            let alertView = UIAlertController(title: nil, message: msg, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+        }
+        self.appDel.remove_HUD()
+    }
+    
+    
+    //MARK: - GetGroupNameDetailService
+    func GetTrailerList()
+    {
+        appDel.Show_HUD()
+        str_webservice = "getlistload"
+        let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/trailer/getlistload.php")!)
+        let postString = ""
+        objwebservice.callServiceCommon(request, postString: postString)
+    }
+    
+    // MARK: -  tableview Delegates
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1;
+    }
+    
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if array_List.count == 0 {
+            
+            return 1
+            
+        }
+        
+        print(array_List.count)
+        return array_List.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        /*
+         if tableView == tabelview_GrpList {
+         let cus_cell = tableView.dequeueReusableCellWithIdentifier("CustomTableViewCell", forIndexPath: indexPath) as! CustomTableViewCell
+         
+         if indexPath.row % 2 == 0 {
+         cus_cell.customImageView.backgroundColor = UIColor.whiteColor()
+         }
+         else {
+         cus_cell.customImageView.backgroundColor = UIColor(red: 241.0 / 255.0, green: 241 / 255.0, blue: 241 / 255.0, alpha: 1.0)
+         }
+         
+         cus_cell.customlabel_left.text = array_List[indexPath.row]["grpnamedisp"] as? String
+         
+         cus_cell.customImg_orange.frame = CGRectMake(275, 8, 192, 56)
+         cus_cell.customlbl_upperImge.frame = CGRectMake(275, 8, 192, 56)
+         cus_cell.customlbl_upperImge.text = array_List[indexPath.row]["pennodisp"] as? String
+         return cus_cell
+         
+         }
+         let cell:UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
+         return cell
+         */
+        let cell:UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
+        
+        //view Backgd
+        let view_bg: UIView = UIView(frame: CGRectMake(0, 0, 709, 75))
+        if indexPath.row % 2 == 0 {
+            view_bg.backgroundColor = UIColor.whiteColor()
+        }
+        else {
+            view_bg.backgroundColor = UIColor(red: 241.0 / 255.0, green: 241 / 255.0, blue: 241 / 255.0, alpha: 1.0)
+        }
+        
+        
+        //label_Grp
+        let label_date: UILabel = UILabel(frame: CGRectMake(15, 13, 150, 50))
+        label_date.textAlignment = .Center
+        label_date.font = UIFont(name: "HelveticaNeue", size: 24)
+        
+        if array_List.count == 0 {
+                label_date.frame = CGRectMake(50, 13, 400, 50)
+                label_date.text = "You have no pen listed"
+                view_bg.addSubview(label_date)
+                cell.contentView.addSubview(view_bg)
+                return cell
+        }
+
+        
+        
+        
+        label_date.text = array_List[indexPath.row]["date_added"] as? String
+        
+        
+        
+        
+        
+        
+        //label_pens
+        let label_pens: UILabel = UILabel(frame: CGRectMake(152, 8, 170, 56))
+        label_pens.textAlignment = .Center
+        label_pens.textColor = UIColor.blackColor()
+        label_pens.font = UIFont(name: "HelveticaNeue", size: 24)
+        label_pens.text = "\(array_List[indexPath.row]["namexx"] as! String)-\(array_List[indexPath.row]["nameyy"] as! String)"
+        
+        //label_qty
+        let label_qty: UILabel = UILabel(frame: CGRectMake(250, 8, 192, 56))
+        label_qty.textAlignment = .Center
+        label_qty.textColor = UIColor.blackColor()
+        label_qty.font = UIFont(name: "HelveticaNeue", size: 26)
+        label_qty.text = "\(array_List[indexPath.row]["qty"] as! String)"
+        
+        
+        //blue image
+        let img_blue: UIImageView = UIImageView(frame: CGRectMake(400, 10, 135, 52))
+        img_blue.image = UIImage(named: "xxyyBlue")
+        
+        //label_revert
+        let label_revert: UILabel = UILabel(frame: CGRectMake(401, 8, 135, 56))
+        label_revert.textAlignment = .Center
+        label_revert.font = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 22), size: 22.0)
+        label_revert.textColor = UIColor.whiteColor()
+        label_revert.text = "REVERT"
+        
+        
+        //btn_revert
+        let btn_revert: UIButton = UIButton(frame: CGRectMake(400, 10, 130, 52))
+        btn_revert.addTarget(self, action: #selector(TrailerToSPListVC.RevertBtnAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        btn_revert.tag = indexPath.row
+        
+        
+        //orange image
+        let img_orange: UIImageView = UIImageView(frame: CGRectMake(550, 8, 150, 56))
+        img_orange.image = UIImage(named: "xxyy")
+        
+        
+        
+        //label_Groups
+        let label_add: UILabel = UILabel(frame: CGRectMake(550, 8, 150, 56))
+        label_add.textAlignment = .Center
+        label_add.font = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 22), size: 22.0)
+        label_add.textColor = UIColor.whiteColor()
+        label_add.text = "ADD"
+        
+        //Add_Button
+        let btn_add: UIButton = UIButton(frame: CGRectMake(550, 8, 150, 56))
+        btn_add.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        btn_add.addTarget(self, action: #selector(TrailerToSPListVC.AddBtnAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        btn_add.tag = indexPath.row
+        
+        
+        view_bg.addSubview(label_date)
+        view_bg.addSubview(label_pens)
+        view_bg.addSubview(label_qty)
+        view_bg.addSubview(img_blue)
+        view_bg.addSubview(label_revert)
+        view_bg.addSubview(btn_revert)
+        view_bg.addSubview(img_orange)
+        view_bg.addSubview(label_add)
+        view_bg.addSubview(btn_add)
+        
+        
+        cell.contentView .addSubview(view_bg)
+        return cell
+        
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        index = indexPath.row
+    }
+    
+    
+    //MARK: - RevertBtnAction
+    @IBAction func RevertBtnAction(sender: UIButton) {
+        
+        let btn: UIButton = sender
+        self.index = btn.tag
+        
+        
+        
+        let alertView = UIAlertController(title: nil, message: "Are You Sure You Want To Revert?", preferredStyle: .Alert)
+        alertView.addAction(UIAlertAction(title: "NO", style: .Cancel, handler: nil))
+        alertView.addAction(UIAlertAction(title: "YES", style: .Default, handler: {(action:UIAlertAction) in
+            if (true)
+            {
+                
+                self.appDel.Show_HUD()
+                
+                if self.appDel.checkInternetConnection() {
+                    self.str_webservice = "revertlot"
+                    let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/trailer/revertlot.php?")!)
+                    let postString = "trailerid=\(self.array_List[self.index]["trailerid"] as! String)&app_id=\(NSUserDefaults.standardUserDefaults().objectForKey("ApplicationIdentifier") as! String)"
+                    self.objwebservice.callServiceCommon(request, postString: postString)
+                }
+                    
+                else
+                {
+                    let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
+                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                    self.presentViewController(alertView, animated: true, completion: nil)
+                }
+                
+                
+            }
+        }));
+        self.presentViewController(alertView, animated: true, completion: nil)
+        
+        
+        
+    }
+    
+    //MARK: - AddBtnAction
+    @IBAction func AddBtnAction(sender: UIButton) {
+        
+        let btn: UIButton = sender
+        index = btn.tag
+        
+        let objVC = self.storyboard?.instantiateViewControllerWithIdentifier("TrailerToSpSelectVC") as! TrailerToSpSelectVC
+        objVC.toPass = array_List[index].mutableCopy() as! NSMutableDictionary
+        self.navigationController?.pushViewController(objVC, animated: false)
+        
+        
+//        self.performSegueWithIdentifier("toTrailerToSp", sender: self)
+        
+    }
+
+
+
+    // MARK: - Navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (segue.identifier == "toTrailerToSp") {
+            let objVC = segue.destinationViewController as! TrailerToSpSelectVC;
+            objVC.toPass = array_List[index] as! NSMutableDictionary
+        }
+    }
+}

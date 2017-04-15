@@ -1,0 +1,717 @@
+//
+//  ReadyReportVC.swift
+//  Crocodile
+//
+//  Created by Nibha Aggarwal on 8/16/16.
+//  Copyright © 2016 Nibha Aggarwal. All rights reserved.
+//
+
+import UIKit
+import Charts
+
+class ReadyReportVC: UIViewController, responseProtocol, userlistProtocol, ChartViewDelegate, CommonClassProtocol {
+    @IBOutlet weak var textfield_StartDate: UITextField!
+    @IBOutlet weak var textfield_StopDate: UITextField!
+    @IBOutlet weak var SegCtrl: UISegmentedControl!
+//    @IBOutlet weak var TableView_Chart: UITableView!
+//    var array_xlable: NSMutableArray! = ["NO DATA"]
+//    var array_ylable: NSMutableArray! = ["0"]
+    var str_webservice: String!
+    var str_Skin: String!
+    
+    var objwebservice : webservice! = webservice()
+    var objuserList : UserListView! = UserListView()
+    var objDatePicker : CalendarView! = CalendarView()
+    
+    var str_segCtrlSel: String! = "Month"
+    var Bool_viewUsers: Bool = false
+    var Bool_viewcalendar: Bool = false
+    var appDel : AppDelegate!
+    
+    @IBOutlet weak var view_Graders: UIView!
+    @IBOutlet weak var picker_Size: UIPickerView!
+    var array_List: NSMutableArray! = []
+    @IBOutlet weak var label_userSelected: UILabel!
+    var Bool_viewGraders: Bool = false
+    var rowUserSelected: Int! = 0
+    var pickerLabel: UILabel!
+    
+    
+    var text_StartDate: String!
+    var text_StopDate: String!
+    @IBOutlet weak var picker_StartDate: UIDatePicker!
+    @IBOutlet weak var picker_StopDate: UIDatePicker!
+    @IBOutlet weak var label_date: UILabel!
+    @IBOutlet weak var view_calendar: UIView! = UIView()
+    
+    let dateForm: NSDateFormatter = NSDateFormatter()
+    
+    //For Chart
+    @IBOutlet weak var barChartView: BarChartView!
+    var monthstemp: [AnyObject] = []
+    var unitTemp: [AnyObject] = []
+    var dicReady: NSMutableDictionary = NSMutableDictionary()
+    
+    //MARK: -
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        guard let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CommonClassVC") as? CommonClassVC
+            else {
+                fatalError();
+        }
+        addChildViewController(controller)
+        controller.view.frame = CGRectMake(0, 0, 1024, 768)
+        controller.array_tableSection = ["report"]
+        controller.array_sectionRow = [["sddreport", "killreport", "gradingreport", "aging", "spinuserepoert",  "Community_Pens_Report_Unsel", "Diereport_unselect", "Readyreport_unselect", "AverageReport_unselect"]]
+        view.addSubview(controller.view)
+        view.sendSubviewToBack(controller.view)
+        controller.label_header.text = "READY REPORT"
+        controller.IIndexPath = NSIndexPath(forRow: 7, inSection: 6)
+        controller.array_temp_section.replaceObjectAtIndex(6, withObject: "Yes")
+        controller.tableMenu.reloadData()
+        controller.tableMenu.contentOffset = CGPointMake(0, 76*3) // to show Die Report tab
+        controller.btn_Sync.hidden = false
+        controller.img_Sync.hidden = false
+        controller.btn_BackPop.hidden = true
+        let arrt = controller.array_temp_row[6]
+        arrt.replaceObjectAtIndex(7, withObject: "Yes")
+        controller.array_userList = NSUserDefaults.standardUserDefaults().objectForKey("UserList")?.mutableCopy() as! NSMutableArray
+        
+        objwebservice?.delegate = self
+        objuserList = UserListView.instanceFromNib() as! UserListView
+        objuserList?.delegate = self
+        
+        controller.delegate = self
+        
+        barChartView.delegate = self
+
+        appDel = (UIApplication.sharedApplication().delegate as! AppDelegate)
+//        TableView_Chart.registerNib(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell")
+//        TableView_Chart.backgroundColor = UIColor.clearColor()
+//        TableView_Chart.reloadData()
+        
+        array_List = ["Select Skin"]
+       
+        array_List.addObject("20-24")
+        array_List.addObject("25-29")
+        array_List.addObject("30-34")
+        array_List.addObject("35-39")
+        array_List.addObject("40-44")
+        array_List.addObject("45-49")
+        array_List.addObject("50")
+//        for i in 0 ..< 7{
+//            
+//            array_List.addObject("\(i)-\(i+4)")
+//            if i == 20 {
+//                array_List.addObject("\(i)-\(i+4)")
+//            }
+//            else{
+//                array_List.addObject("\(i+5)-\(i+4)")
+//            }
+//        }
+        print(array_List)
+        str_Skin = array_List[0] as! String
+        picker_Size.reloadAllComponents()
+        picker_Size.selectRow(0, inComponent: 0, animated: true)
+        label_userSelected.text = "  \(str_Skin)"
+
+        text_StartDate = "\(self.todaydate())"
+        text_StopDate = "\(self.daysBetweenDate(self.todaydate()))"
+        
+        textfield_StartDate.text = "  \(text_StartDate)"
+        textfield_StopDate.text = "  \(text_StopDate)"
+        
+        label_date.text = "\(text_StartDate) - \(text_StopDate)"
+        
+        
+        self.appDel.ForInspectionComes = ""
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        self.appDel.ForInspectionComes = ""
+        SegCtrl.setDividerImage(UIImage(named: "filter"), forLeftSegmentState: .Selected, rightSegmentState: .Normal, barMetrics:UIBarMetrics.Default)
+        
+        if self.appDel.checkInternetConnection() {
+            self.getReadyReportService()
+        }
+        else
+        {
+            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+        }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    
+    
+    //MARK: - Export Btn_Action/ UserList Delegate
+    @IBAction func Export_BtnAction(sender: AnyObject) {
+        objDatePicker.removeDateView(self.view)
+        Bool_viewcalendar = false
+        
+        if !Bool_viewUsers {
+            objuserList.showView(self.view, frame1: CGRectMake(677, 205, 318, 231))
+            Bool_viewUsers = true
+        }
+        else {
+            objuserList.removeView(self.view)
+            Bool_viewUsers = false
+        }
+    }
+    
+    func cancelMethod() {
+        Bool_viewUsers = false
+        objuserList.removeView(self.view)
+    }
+    
+
+    func DoneMethod(EmailUsers: String!) {
+        
+        if EmailUsers == nil {
+//            dispatch_async(dispatch_get_main_queue())
+//            {
+                let alertView = UIAlertController(title: nil, message: "Please Select User.", preferredStyle: .Alert)
+                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                self.presentViewController(alertView, animated: true, completion: nil)
+//            }
+        }
+        else
+        {
+            Bool_viewUsers = false
+            objuserList.removeView(self.view)
+            if self.appDel.checkInternetConnection() {
+                appDel.Show_HUD()
+                str_webservice = "report_readyExport"
+                var start: String! = textfield_StartDate.text!.stringByReplacingOccurrencesOfString(" ", withString: "")
+                start = start.stringByReplacingOccurrencesOfString("/", withString: "-")
+                var stop: String! = textfield_StopDate.text!.stringByReplacingOccurrencesOfString(" ", withString: "")
+                stop = stop.stringByReplacingOccurrencesOfString("/", withString: "-")
+                
+                
+                
+                let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/file/report_ready.php?")!)
+                var postString = ""
+                if rowUserSelected == 0 {
+                    postString = "datefrom=\(start)&dateto=\(stop)&tomail=\(EmailUsers)"
+                }
+                else
+                {
+                    postString = "datefrom=\(start)&dateto=\(stop)&tomail=\(EmailUsers)&skinsize=\(array_List.objectAtIndex(rowUserSelected) as! String)"
+                }
+                objwebservice.callServiceCommon_inspection(request, postString: postString)
+            }
+            else
+            {
+//                dispatch_async(dispatch_get_main_queue()) {
+                    let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
+                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                    self.presentViewController(alertView, animated: true, completion: nil)
+//                }
+            }
+        }
+        
+        
+ 
+        
+    }
+    
+    //MARK: - CommonClass Delegate
+    func responseCommonClassOffline() {
+        self.viewDidAppear(false)
+    }
+    
+    // MARK: - Webservice NetLost delegate
+    func NetworkLost(str: String!)
+    {
+        if str == "netLost" {
+            
+            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+        else if (str == "noResponse")
+        {
+            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+    }
+    
+    
+    //MARK: - Webservice Delegate
+    func responseDictionary(dic: NSMutableDictionary) {
+        if str_webservice == "ready_report" {
+            print(dic)
+            self.dicReady = dic
+            
+            monthstemp.removeAll()
+            unitTemp.removeAll()
+            
+            if dic["ReadyPens"] != nil {
+                if dic["ReadyPens"]?.count != 0 {
+                    if str_segCtrlSel == "Year" {
+                        autoreleasepool{
+                            for i in 0 ..< dic["ReadyPens"]!.count {
+                                var week: String = dic["ReadyPens"]![i]["weekno"] as! String
+                                let year: String = dic["ReadyPens"]![i]["yearno"] as! String
+                                week = "\(week)-\(year)"
+                                
+                                monthstemp.append(week)
+                                let myDouble = Double(dic["ReadyPens"]![i]["value"] as! String)
+                                unitTemp.append(myDouble!)
+                                
+                            }
+                        }
+                        setChart(monthstemp as! [String], values: unitTemp as! [Double])
+                    }
+                    else
+                    {
+                        autoreleasepool{
+                            for i in 0 ..< dic["ReadyPens"]!.count {
+                                var month: String = dic["ReadyPens"]![i]["month_year"] as! String
+                                let arrtemp = month.componentsSeparatedByString("-")
+                                if (arrtemp[0] == "1") {
+                                    month = "JAN"
+                                }
+                                else if (arrtemp[0] == "2") {
+                                    month = "FEB"
+                                }
+                                else if (arrtemp[0] == "3") {
+                                    month = "MAR"
+                                }
+                                else if (arrtemp[0] == "4") {
+                                    month = "APR"
+                                }
+                                else if (arrtemp[0] == "5") {
+                                    month = "MAY"
+                                }
+                                else if (arrtemp[0] == "6") {
+                                    month = "JUN"
+                                }
+                                else if (arrtemp[0] == "7") {
+                                    month = "JUL"
+                                }
+                                else if (arrtemp[0] == "8") {
+                                    month = "AUG"
+                                }
+                                else if (arrtemp[0] == "9") {
+                                    month = "SEP"
+                                }
+                                else if (arrtemp[0] == "10") {
+                                    month = "OCT"
+                                }
+                                else if (arrtemp[0] == "11") {
+                                    month = "NOV"
+                                }
+                                else if (arrtemp[0] == "12") {
+                                    month = "DEC"
+                                }
+                                
+                                let year: String = arrtemp[1]
+                                month = "\(month)-\(year)"
+                                monthstemp.append(month)
+                                let myDouble = Double(dic["ReadyPens"]![i]["total_pens"] as! String)
+                                unitTemp.append(myDouble!)
+                                
+                            }
+                        }
+                        setChart(monthstemp as! [String], values: unitTemp as! [Double])
+                    }
+                }
+                else
+                {
+                    monthstemp.append("NO DATA")
+                    let myDouble = Double("0")
+                    unitTemp.append(myDouble!)
+                    setChart1(monthstemp as! [String], values: unitTemp as! [Double])
+                }
+                
+            }
+            else
+            {
+                monthstemp.append("NO DATA")
+                let myDouble = Double("0")
+                unitTemp.append(myDouble!)
+                setChart1(monthstemp as! [String], values: unitTemp as! [Double])
+            }
+        }
+            
+            //
+        else if (str_webservice == "report_readyExport")
+        {
+            var msg: String!
+            if dic["success"] as! String == "True" {
+                msg = "Mail Sent."
+            }
+            else
+            {
+                msg = "Mail Not Sent."
+            }
+                let alertView = UIAlertController(title: nil, message: msg, preferredStyle: .Alert)
+                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                self.presentViewController(alertView, animated: true, completion: nil)
+        }
+            self.appDel.remove_HUD()
+    }
+    
+    //MARK: - getReadyReportService
+    func getReadyReportService()
+    {
+        appDel.Show_HUD()
+        str_webservice = "ready_report"
+        var start: String! = textfield_StartDate.text!.stringByReplacingOccurrencesOfString(" ", withString: "")
+        start = start.stringByReplacingOccurrencesOfString("/", withString: "-")
+        var stop: String! = textfield_StopDate.text!.stringByReplacingOccurrencesOfString(" ", withString: "")
+        stop = stop.stringByReplacingOccurrencesOfString("/", withString: "-")
+        let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/sp_ready/getreadyreport.php?")!)
+        var postString = "datefrom=\(start)&dateto=\(stop)&skinsize=\(array_List.objectAtIndex(rowUserSelected) as! String)"
+        if rowUserSelected == 0 {
+            postString = "datefrom=\(start)&dateto=\(stop)&skinsize="
+        }
+        objwebservice.callServiceCommon(request, postString: postString)
+    }
+    
+    // MARK: - PickerView Delegates
+    func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int{
+        return 1
+    }
+    
+    // returns the # of rows in each component..
+    func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int{
+        if pickerView == picker_Size {
+            print(array_List.count)
+            return array_List.count
+        }
+        
+        return 0
+    }
+    
+    
+    func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 45.0
+    }
+    
+    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView) -> UIView {
+        pickerLabel = (view as! UILabel)
+        if pickerLabel == nil {
+            let frame: CGRect = CGRectMake(10, 0, 250, 65)
+            pickerLabel = UILabel(frame: frame)
+            pickerLabel.textAlignment = .Center
+            pickerLabel.textColor = UIColor.blackColor()
+            pickerLabel.font = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 20), size: 20.0)
+        }
+        if pickerView == picker_Size {
+            pickerLabel.text = array_List.objectAtIndex(row) as? String
+        }
+        
+        return pickerLabel
+    }
+    
+    
+    
+    func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
+    {
+        
+    }
+    
+    
+    //MARK: - Segment Control Value Changed
+    @IBAction func SegmentToogle(sender: UISegmentedControl) {
+//        appDel.removeDirect(self.view)
+        Bool_viewUsers = false
+        if sender.selectedSegmentIndex == 0 {
+            str_segCtrlSel = "Month"
+            sender.setDividerImage(UIImage(named: "filter"), forLeftSegmentState: .Selected, rightSegmentState: .Normal, barMetrics:UIBarMetrics.Default)
+        }
+        else if sender.selectedSegmentIndex == 1 {
+            str_segCtrlSel = "Week"
+            sender.setDividerImage(UIImage(named: "filter2"), forLeftSegmentState: .Normal, rightSegmentState: .Normal, barMetrics: UIBarMetrics.Default)
+        }
+    }
+    
+    
+    
+    //MARK: - Grader Picker View/ User View Done/Cancel
+    @IBAction func GraderShowList(sender: AnyObject)
+    {
+        objuserList.removeView(self.view)
+        Bool_viewUsers = false
+        
+        view_calendar.hidden = true
+        Bool_viewcalendar = false
+        
+        if !Bool_viewGraders {
+            view_Graders.hidden = true
+            
+            let transitionOptions = UIViewAnimationOptions.TransitionCurlDown
+            UIView.transitionWithView(self.view_Graders, duration: 0.6, options: transitionOptions, animations: {
+                self.view_Graders.hidden = false
+                
+                }, completion: { finished in
+                    
+                    self.Bool_viewGraders = true
+            })
+            
+        }
+        else {
+            let transitionOptions = UIViewAnimationOptions.TransitionCurlUp
+            UIView.transitionWithView(self.view_Graders, duration: 0.6, options: transitionOptions, animations: {
+                self.view_Graders.hidden = true
+                
+                }, completion: { finished in
+                    
+                    self.Bool_viewGraders = false
+            })
+            
+        }
+        
+    }
+    
+    @IBAction func CancelBtn_Users(sender: AnyObject)
+    {
+        let transitionOptions = UIViewAnimationOptions.TransitionCurlUp
+        UIView.transitionWithView(self.view_Graders, duration: 0.6, options: transitionOptions, animations: {
+            self.view_Graders.hidden = true
+            
+            }, completion: { finished in
+                
+                self.Bool_viewGraders = false
+        })
+        
+    }
+    
+    
+    @IBAction func DoneBtn_Users(sender: AnyObject)
+    {
+        rowUserSelected = picker_Size.selectedRowInComponent(0)
+        label_userSelected.text = "  \(array_List.objectAtIndex(rowUserSelected) as! String)"
+        let transitionOptions = UIViewAnimationOptions.TransitionCurlUp
+        UIView.transitionWithView(self.view_Graders, duration: 0.75, options: transitionOptions, animations: {
+            self.view_Graders.hidden = true
+            
+            }, completion: { finished in
+                
+                self.Bool_viewGraders = false
+        })
+        self.ReportForDone()
+    }
+    
+    
+    
+    
+    
+    //MARK: - calendar Btn_Action/ Calendar Delegate
+    @IBAction func Calendar_BtnAction(sender: UIButton) {
+        objuserList.removeView(self.view)
+        Bool_viewUsers = false
+        
+        view_calendar.hidden = false
+        
+        if Bool_viewGraders {
+            let transitionOptions = UIViewAnimationOptions.TransitionCurlUp
+            UIView.transitionWithView(self.view_Graders, duration: 0.6, options: transitionOptions, animations: {
+                self.view_Graders.hidden = true
+                
+                }, completion: { finished in
+                    
+                    self.Bool_viewGraders = false
+            })
+        }
+        
+    }
+
+    
+    func todaydate() -> NSString
+    {
+//        let dateForm: NSDateFormatter = NSDateFormatter()
+        let twelveHourLocale: NSLocale = NSLocale(localeIdentifier: "en_US_POSIX")
+        dateForm.locale = twelveHourLocale
+        dateForm.dateFormat = "dd/MM/yyyy"
+        let todayDate: String = "  \(dateForm.stringFromDate(NSDate()))"
+        
+       
+        
+        return todayDate
+    }
+    
+    func daysBetweenDate(currentstrDate: NSString!) -> NSString {
+        let dateComponents: NSDateComponents = NSDateComponents()
+        dateComponents.year = 1
+        let calendar: NSCalendar = NSCalendar.currentCalendar()
+        
+        var currentDate: NSDate! = NSDate()
+//        let dateForm: NSDateFormatter = NSDateFormatter()
+        let twelveHourLocale: NSLocale = NSLocale(localeIdentifier: "en_US_POSIX")
+        dateForm.locale = twelveHourLocale
+        dateForm.dateFormat = "dd/MM/yyyy"
+        currentDate = dateForm.dateFromString(currentstrDate as String)
+        
+        let newDate: NSDate = calendar.dateByAddingComponents(dateComponents, toDate: currentDate, options: NSCalendarOptions(rawValue: 0))!
+       
+        picker_StartDate.setDate(currentDate, animated: true)
+        picker_StopDate.setDate(newDate, animated: true)
+        picker_StopDate.minimumDate = picker_StartDate.date
+//        picker_StopDate.maximumDate = NSCalendar.currentCalendar().dateByAddingUnit(.Year, value: 1, toDate: NSDate(), options: [])
+        
+        let SStr_date = "\(dateForm.stringFromDate(newDate))"
+        return SStr_date
+    }
+    
+    
+    @IBAction func picker_StartDateChanged(sender: AnyObject) {
+//        let dateForm: NSDateFormatter = NSDateFormatter()
+        dateForm.dateFormat = "dd/MM/yyyy"
+        text_StartDate = "  \(dateForm.stringFromDate(picker_StartDate.date))"
+        picker_StopDate.minimumDate = picker_StartDate.date
+        
+        label_date.text = "\(text_StartDate) - \(text_StopDate)"
+        print(text_StartDate)
+    }
+    
+    
+    @IBAction func picker_StopDateChanged(sender: AnyObject) {
+//        let dateForm: NSDateFormatter = NSDateFormatter()
+        dateForm.dateFormat = "dd/MM/yyyy"
+        
+        
+        text_StopDate = "  \(dateForm.stringFromDate(picker_StopDate.date))"
+        picker_StartDate.maximumDate = picker_StopDate.date
+        print(text_StopDate)
+        
+        label_date.text = "\(text_StartDate) - \(text_StopDate)"
+    }
+    
+    
+    @IBAction func CancelCalendar_BtnAction(sender: AnyObject)
+    {
+        view_calendar.hidden = true
+    }
+    
+    
+    @IBAction func DoneCalendar_BtnAction(sender: AnyObject) {
+        
+        textfield_StartDate.text = text_StartDate
+        textfield_StopDate.text = text_StopDate
+        
+        ReportForDone()
+            
+        view_calendar.hidden = true
+    }
+
+
+    func ReportForDone()
+    {
+        appDel.Show_HUD()
+        if self.appDel.checkInternetConnection() {
+            str_webservice = "ready_report"
+            var start: String! = text_StartDate.stringByReplacingOccurrencesOfString(" ", withString: "")
+            start = start.stringByReplacingOccurrencesOfString("/", withString: "-")
+            var stop: String! = text_StopDate.stringByReplacingOccurrencesOfString(" ", withString: "")
+            stop = stop.stringByReplacingOccurrencesOfString("/", withString: "-")
+            
+            let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/sp_ready/getreadyreport.php?")!)
+            var postString = "datefrom=\(start)&dateto=\(stop)&skinsize=\(array_List.objectAtIndex(rowUserSelected) as! String)"
+            if rowUserSelected == 0 {
+                postString = "datefrom=\(start)&dateto=\(stop)&skinsize="
+            }
+            
+            objwebservice.callServiceCommon(request, postString: postString)
+        }
+    }
+    
+    
+    //MARK: - CHART
+    func setChart(dataPoints: [String], values: [Double]) {
+        barChartView.noDataText = "No Data For Related Period."
+        var dataEntries: [BarChartDataEntry] = []
+        
+        autoreleasepool{
+            for i in 0..<dataPoints.count {
+                let dataEntry = BarChartDataEntry(value: values[i], xIndex: i)
+                dataEntries.append(dataEntry)
+            }
+        }
+        
+        let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Ready Report")
+        let chartData = BarChartData(xVals: monthstemp as? [NSObject], dataSet: chartDataSet)
+        if dataPoints.count < 5 {
+            chartDataSet.barSpace = 0.8
+        }
+        barChartView.data = chartData
+        barChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
+        barChartView.xAxis.labelHeight = 80
+        
+        chartDataSet.colors = [UIColor(red: 6/255, green: 92/255, blue: 142/255, alpha: 1)]
+        barChartView.descriptionText = ""
+        barChartView.xAxis.labelFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 13), size: 13.0)
+        chartDataSet.valueFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 18), size: 18.0)
+        //        barChartView.xAxis.labelRotationAngle = 135
+        
+    }
+    
+    func chartValueSelected(chartView: ChartViewBase, entry: ChartDataEntry, dataSetIndex: Int, highlight: ChartHighlight) {
+        print("\(entry.value) in \(monthstemp[entry.xIndex])")
+        print(entry.xIndex)
+        let obj = self.storyboard?.instantiateViewControllerWithIdentifier("InspectionListVC") as! InspectionListVC
+        if (dicReady["ReadyPens"]!.count > 0)
+        {
+            obj.toPassArray.addObject(dicReady["ReadyPens"]![entry.xIndex]["month_year"] as! String)
+            
+            if label_userSelected.text!.containsString("Select Skin") {
+                obj.toPassArray.addObject("")
+            }
+            else
+            {
+                let start: String! = label_userSelected.text!.stringByReplacingOccurrencesOfString(" ", withString: "")
+                obj.toPassArray.addObject(start)
+            }
+            obj.toPassArray.addObject("FromReady")
+            obj.toPassArray.addObject("\(String(entry.xIndex))")
+            self.navigationController?.pushViewController(obj, animated: false)
+        }
+    }
+    
+    
+    func setChart1(dataPoints: [String], values: [Double]) {
+        barChartView.noDataText = "No Data For Related Period."
+        var dataEntries: [BarChartDataEntry] = []
+        
+        autoreleasepool{
+            for i in 0..<dataPoints.count {
+                let dataEntry = BarChartDataEntry(value: values[i], xIndex: i)
+                dataEntries.append(dataEntry)
+            }
+        }
+        
+        let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Ready Report")
+        let chartData = BarChartData(xVals: monthstemp as? [NSObject], dataSet: chartDataSet)
+        barChartView.data = chartData
+        barChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
+        barChartView.xAxis.labelHeight = 80
+        chartDataSet.colors = [UIColor(red: 6/255, green: 92/255, blue: 142/255, alpha: 1)]
+        barChartView.descriptionText = ""
+        barChartView.xAxis.labelFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 13), size: 13.0)
+        chartDataSet.valueFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 18), size: 18.0)
+        chartData.setDrawValues(false)
+    }
+    
+    
+}

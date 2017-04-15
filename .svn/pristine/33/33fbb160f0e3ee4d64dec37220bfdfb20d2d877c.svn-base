@@ -1,0 +1,55 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "ec52686b-4894-2c4d-8769-954f7599057f++2552",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "ec52686b-4894-2c4d-8769-954f7599057f++1740" : {
+
+    },
+    "ec52686b-4894-2c4d-8769-954f7599057f++2552" : {
+
+    },
+    "a48657d4-444c-4746-bced-dcbb9760e4fe++8065" : {
+
+    },
+    "ec52686b-4894-2c4d-8769-954f7599057f++6629" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "ec52686b-4894-2c4d-8769-954f7599057f++1740" : 0,
+    "ec52686b-4894-2c4d-8769-954f7599057f++2552" : 9223372036854775807,
+    "a48657d4-444c-4746-bced-dcbb9760e4fe++8065" : 0,
+    "ec52686b-4894-2c4d-8769-954f7599057f++6629" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "268DD3E1-3A65-4F94-A8FF-FAE5AE83FA10",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "ec52686b-4894-2c4d-8769-954f7599057f++1740" : "Crocodile_Swift_Sep12\/",
+    "ec52686b-4894-2c4d-8769-954f7599057f++2552" : "Lagoon_Nov4\/",
+    "a48657d4-444c-4746-bced-dcbb9760e4fe++8065" : "Crocodile_Swift_June17\/",
+    "ec52686b-4894-2c4d-8769-954f7599057f++6629" : "Crocodile_Swift_Oct5\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Crocodile",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Crocodile.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/svn.a1technology.in\/svn\/CrocFarms",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "a48657d4-444c-4746-bced-dcbb9760e4fe++8065"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/svn.a1technology.in\/svn\/CrocFarms",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ec52686b-4894-2c4d-8769-954f7599057f++1740"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/repo.a1technology.in\/svn\/Porosus",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ec52686b-4894-2c4d-8769-954f7599057f++2552"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/repo.a1technology.in\/svn\/Porosus",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ec52686b-4894-2c4d-8769-954f7599057f++6629"
+    }
+  ]
+}

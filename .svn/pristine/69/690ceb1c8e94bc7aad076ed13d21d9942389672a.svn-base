@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="15G1004" minimumToolsVersion="Xcode 7.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+    <entity name="AddingSinglePenTable" representedClassName=".AddingSinglePenTable" syncable="YES">
+        <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="condition" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="graderid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="inspectionperiod" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="movedgrp" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="movednamexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="movednameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="offline" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="skinsize" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="AddSectionTable" representedClassName=".AddSectionTable" syncable="YES">
+        <attribute name="available" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="total" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Animalgroupdie" representedClassName=".Animalgroupdie" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalanimal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userid" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="AnimalgroupEmpty" representedClassName=".AnimalgroupEmpty" syncable="YES">
+        <attribute name="groupname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userid" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Animalgroupkill" representedClassName=".Animalgroupkill" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalanimal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userid" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="AnimalsCountTable" representedClassName=".AnimalsCountTable" syncable="YES">
+        <attribute name="count_id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="count_namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="count_nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="movedby" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="offline" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="total_animals" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="ConditionTable" representedClassName=".ConditionTable" syncable="YES">
+        <attribute name="conditionid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="conditionname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="EmptyPensTable" representedClassName=".EmptyPensTable" syncable="YES">
+        <attribute name="groupcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="grpnamedisp" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pennodisp" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="EmptyPensTable1" representedClassName=".EmptyPensTable1" syncable="YES">
+        <attribute name="groupcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="grpnamedisp" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pennodisp" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="EmptyPensTable2" representedClassName=".EmptyPensTable2" syncable="YES">
+        <attribute name="groupcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="grpnamedisp" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pennodisp" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="EmptyPensTable3" representedClassName=".EmptyPensTable3" syncable="YES">
+        <attribute name="groupcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="grpnamedisp" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pennodisp" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="FirstLetterTable" representedClassName=".FirstLetterTable" syncable="YES">
+        <attribute name="first_letter" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="group_code" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="GraderTable" representedClassName=".GraderTable" syncable="YES">
+        <attribute name="fname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="grader_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lname" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="GroupAddToDieTable" representedClassName=".GroupAddToDieTable" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameXX" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameYY" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalAnimal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="GroupAllocatedPen" representedClassName=".GroupAllocatedPen" syncable="YES">
+        <attribute name="animal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="InspectionPeriodTable" representedClassName=".InspectionPeriodTable" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="inspect_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="inspect_period" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="KillRevertTable" representedClassName=".KillRevertTable" syncable="YES">
+        <attribute name="killid" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="KillTable" representedClassName="KillTable" syncable="YES">
+        <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entry_date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupcodedisp" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="inspect_date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ispink" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="killdate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="killedFrom" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="killid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="offline" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pennodisp" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recheck_count" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sp_size" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Move_animal" representedClassName=".Move_animal" syncable="YES">
+        <attribute name="from_groupname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="from_namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="from_nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="moved_by" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="moved_on" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="no_animals" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="offline" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="to_groupname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="to_namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="to_nameyy" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MoveAddAnimal" representedClassName=".MoveAddAnimal" syncable="YES">
+        <attribute name="groupname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="moved_by" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalanimal" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MoveHatchlings" representedClassName=".MoveHatchlings" syncable="YES">
+        <attribute name="groupname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="moved_by" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalanimal" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PinkMarkTable" representedClassName=".PinkMarkTable" syncable="YES">
+        <attribute name="ispink" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="offline" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="penid" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="RecheckTable" representedClassName=".RecheckTable" syncable="YES">
+        <attribute name="commentCondition" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="offline" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recheck" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="SingleAddToDie" representedClassName=".SingleAddToDie" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="group" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userid" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="SingleAllocatedPen" representedClassName=".SingleAllocatedPen" syncable="YES">
+        <attribute name="addedConvert" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="colorcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dateadded" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entryConvert" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entrydate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="groupcodedisp" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="int_recheckcount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ispink" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="namexx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameyy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pennodisp" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recheckcount" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="skin_size" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="SkinSizeTable" representedClassName=".SkinSizeTable" syncable="YES">
+        <attribute name="offline" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="skinsize" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="TimeStrampTable" representedClassName=".TimeStrampTable" syncable="YES">
+        <attribute name="allocatedPenTym" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="animalCountTym" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="availableTym" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="emptyPenTym" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="UpdateMoveToAnother" representedClassName=".UpdateMoveToAnother" syncable="YES">
+        <attribute name="from_penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="from_xx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="from_yy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="to_penid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="to_xx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="to_yy" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="AddingSinglePenTable" positionX="-9" positionY="54" width="128" height="210"/>
+        <element name="AddSectionTable" positionX="-63" positionY="36" width="128" height="120"/>
+        <element name="Animalgroupdie" positionX="27" positionY="108" width="128" height="135"/>
+        <element name="AnimalgroupEmpty" positionX="-9" positionY="117" width="128" height="105"/>
+        <element name="Animalgroupkill" positionX="9" positionY="117" width="128" height="135"/>
+        <element name="AnimalsCountTable" positionX="-9" positionY="72" width="128" height="150"/>
+        <element name="ConditionTable" positionX="0" positionY="90" width="128" height="30"/>
+        <element name="EmptyPensTable" positionX="-9" positionY="117" width="128" height="150"/>
+        <element name="EmptyPensTable1" positionX="-36" positionY="72" width="128" height="30"/>
+        <element name="EmptyPensTable2" positionX="-18" positionY="81" width="128" height="30"/>
+        <element name="EmptyPensTable3" positionX="-54" positionY="63" width="128" height="150"/>
+        <element name="FirstLetterTable" positionX="-9" positionY="135" width="128" height="75"/>
+        <element name="GraderTable" positionX="18" positionY="99" width="128" height="105"/>
+        <element name="GroupAddToDieTable" positionX="9" positionY="90" width="128" height="120"/>
+        <element name="GroupAllocatedPen" positionX="18" positionY="99" width="128" height="90"/>
+        <element name="InspectionPeriodTable" positionX="36" positionY="108" width="128" height="30"/>
+        <element name="KillRevertTable" positionX="-9" positionY="117" width="128" height="60"/>
+        <element name="KillTable" positionX="-63" positionY="-18" width="128" height="255"/>
+        <element name="Move_animal" positionX="-9" positionY="81" width="128" height="210"/>
+        <element name="MoveAddAnimal" positionX="0" positionY="126" width="128" height="120"/>
+        <element name="MoveHatchlings" positionX="-9" positionY="72" width="128" height="120"/>
+        <element name="PinkMarkTable" positionX="-9" positionY="135" width="128" height="90"/>
+        <element name="RecheckTable" positionX="-9" positionY="99" width="128" height="105"/>
+        <element name="SingleAddToDie" positionX="0" positionY="81" width="128" height="120"/>
+        <element name="SingleAllocatedPen" positionX="0" positionY="108" width="128" height="300"/>
+        <element name="SkinSizeTable" positionX="9" positionY="117" width="128" height="90"/>
+        <element name="TimeStrampTable" positionX="0" positionY="144" width="128" height="105"/>
+        <element name="UpdateMoveToAnother" positionX="-9" positionY="135" width="128" height="133"/>
+    </elements>
+</model>

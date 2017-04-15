@@ -1,0 +1,783 @@
+//
+//  SingleDieVC.swift
+//  Crocodile
+//
+//  Created by Nibha Aggarwal on 6/23/16.
+//  Copyright © 2016 Nibha Aggarwal. All rights reserved.
+//
+
+import UIKit
+import CoreData
+
+class SingleDieVC: UIViewController, responseProtocol, CommonClassProtocol
+{
+    
+    @IBOutlet var picker_group: UIPickerView!
+    @IBOutlet weak var picker_penXX: UIPickerView!
+    @IBOutlet var picker_pen1: UIPickerView!
+    @IBOutlet var picker_pen2: UIPickerView!
+    @IBOutlet var picker_pen3: UIPickerView!
+    @IBOutlet var picker_pen4: UIPickerView!
+    var objwebservice : webservice! = webservice()
+    var objDatePicker : CalendarView! = CalendarView()
+    var appDel : AppDelegate!
+    
+    var array_Group: NSMutableArray = ["IFP", "IFTP", "OFP", "RTF"]
+    var array_SinglePens: NSMutableArray = []
+    var array_XX: NSMutableArray = []
+    
+    var str_group: String!
+    var str_name_XX: String!
+    var str_name_1: String!
+    var str_name_2: String!
+    var str_name_3: String!
+    var str_name_4: String!
+    var str_todatDate: String!
+    var str_webservice: String!
+    var pickerLabel: UILabel!
+    var dic_Select: NSMutableDictionary! = NSMutableDictionary()
+    
+    let dateForm: NSDateFormatter = NSDateFormatter()
+
+    //MARK: - Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        guard let controller = self.storyboard!.instantiateViewControllerWithIdentifier("CommonClassVC") as? CommonClassVC
+            else {
+                fatalError();
+        }
+        addChildViewController(controller)
+        controller.view.frame = CGRectMake(0, 0, 1024, 768)
+        
+        controller.array_tableSection = ["move_left"]
+        controller.array_sectionRow = [["Move_Hatchlings_UnSel", "move_left", "add_to_dieBLUE", "add_to_killBLUE", "Sp_move_blue", "GroupAverage_blue"]]
+        view.addSubview(controller.view)
+        view.sendSubviewToBack(controller.view)
+        controller.IIndexPath = NSIndexPath(forRow: 2, inSection: 1)
+        controller.tableMenu.reloadData()
+        controller.label_header.text = "ADD TO DIE"
+        controller.array_temp_section.replaceObjectAtIndex(1, withObject: "Yes")
+        let arrt = controller.array_temp_row[1]
+        arrt.replaceObjectAtIndex(2, withObject: "Yes")
+        
+        controller.delegate = self
+        
+        objwebservice?.delegate = self
+        appDel = (UIApplication.sharedApplication().delegate as! AppDelegate)
+        
+        objDatePicker = CalendarView.instanceFromNib() as! CalendarView
+        str_todatDate = "\(objDatePicker.todaydate())"
+        str_todatDate = str_todatDate!.stringByReplacingOccurrencesOfString(" ", withString: "")
+        str_todatDate = str_todatDate.stringByReplacingOccurrencesOfString("/", withString: "-")
+        
+//        for i in 1 ..< 4{
+//            array_Group.addObject("\(i)")
+//        }
+        
+        array_XX.addObject("GO")
+        for i in 0 ..< 10{
+            array_SinglePens.addObject("\(i)")
+        }
+        
+        for i in 1 ..< 17{
+            array_XX.addObject("IF\(i)")
+        }
+        array_XX.addObject("OF")
+        array_XX.addObject("WA")
+        array_XX.addObject("WB")
+        array_XX.addObject("XA")
+        array_XX.addObject("XB")
+        array_XX.addObject("YA")
+        array_XX.addObject("YB")
+        array_XX.addObject("ZA")
+        array_XX.addObject("ZB")
+        
+//        for char in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".characters {
+//            array_XX.addObject("\(char)")
+//        }
+        
+        picker_group.reloadAllComponents()
+        picker_group.selectRow(0, inComponent: 0, animated: true)  //1
+        
+        picker_penXX.reloadAllComponents()
+        picker_penXX.selectRow(0, inComponent: 0, animated: true)  //1
+        
+        picker_pen1.reloadAllComponents()
+        picker_pen1.selectRow(0, inComponent: 0, animated: true)  //0
+        
+        picker_pen2.reloadAllComponents()
+        picker_pen2.selectRow(0, inComponent: 0, animated: true)  //0
+        
+        picker_pen3.reloadAllComponents()
+        picker_pen3.selectRow(0, inComponent: 0, animated: true)  //0
+        
+        picker_pen4.reloadAllComponents()
+        picker_pen4.selectRow(1, inComponent: 0, animated: true)  //0
+        
+        str_group = array_Group[0] as! String
+        str_name_XX = array_XX[0] as! String
+        str_name_1 = array_SinglePens[0] as! String
+        str_name_2 = array_SinglePens[0] as! String
+        str_name_3 = array_SinglePens[0] as! String
+        str_name_4 = array_SinglePens[1] as! String
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        if self.appDel.checkInternetConnection() {
+            appDel.Show_HUD()
+            self.GetGroupNameDetailService()
+        }
+    }
+    
+    func GetGroupNameDetailService()
+    {
+        self.appDel.str_InspectionData = ""
+       
+        
+        appDel.Show_HUD()
+        str_webservice = "allallocatedpens"
+        let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/singlepen/allallocatedpens.php?")!)
+        var postString = ""
+        if NSUserDefaults.standardUserDefaults().objectForKey("AllData") != nil
+        {
+            if NSUserDefaults.standardUserDefaults().objectForKey("AllData") as! String == "AllDataSaved"
+            {
+                let fetchRequest = NSFetchRequest(entityName: "TimeStrampTable")
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.fetchBatchSize = 20
+                fetchRequest.resultType = NSFetchRequestResultType.DictionaryResultType
+                var str: String!
+                do {
+                    let results = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest)
+                    if (results.count > 0)
+                    {
+                        print(results)
+                        for i in 0 ..< results.count {
+                            
+                            if let val = results[i]["allocatedPenTym"] {
+                                if let x = val {
+                                    print(x)
+                                    str = "\(results[i]["allocatedPenTym"] as! String)"
+                                    str = str.stringByReplacingOccurrencesOfString(" ", withString: "%20")
+                                    postString = "last_update=\(str)&app_id=\(NSUserDefaults.standardUserDefaults().objectForKey("ApplicationIdentifier") as! String)"
+                                } else {
+                                    print("value is nil")
+                                }
+                            } else {
+                                print("key is not present in dict")
+                            }
+                        }
+                        
+                        
+                    }
+                } catch{}
+                
+                
+            }
+            
+        }
+        objwebservice.callServiceCommon_inspection(request, postString: postString)
+    }
+    
+    //MARK: -  CommonClass Delegate
+    func responseCommonClassOffline() {
+        self.viewDidAppear(false)
+    }
+    
+    // MARK: - Webservice NetLost delegate
+    func NetworkLost(str: String!)
+    {
+        if str == "netLost" {
+            
+            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+        else if (str == "noResponse")
+        {
+            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            self.view.userInteractionEnabled = true
+        }
+    }
+
+    //MARK: - Webservice Delegate
+    func responseDictionary(dic: NSMutableDictionary) {
+            if self.str_webservice == "die_animals" {
+                var msg: String!
+                if dic["success"] as! String == "True"
+                {
+                    
+                    let fetchRequest = NSFetchRequest(entityName: "SingleAllocatedPen")
+                    let predicate = NSPredicate(format: "groupcode = '\(str_group)' and namexx = '\(str_name_XX)' and nameyy = '\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)'")
+                    fetchRequest.predicate = predicate
+                    fetchRequest.returnsObjectsAsFaults = false
+                    fetchRequest.fetchBatchSize = 20
+                    fetchRequest.resultType = NSFetchRequestResultType.DictionaryResultType
+                    do
+                    {
+                        let results = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest)
+                        if results.count > 0 {
+                            self.DeleteFromOtherTables("KillTable", fullFormat: "groupcode = '\(str_group)' and pennodisp = '\(str_name_XX)-\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)'")
+                            
+                            self.UpDateAddSectionTableEvent(str_group)
+                            
+                            self.addToEmptyPen(str_group, grpnamedisp: "\(str_group)-PEN#", namexx: str_name_XX, nameyy: "\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)", pennodisp: "\(str_name_XX)-\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)", penid: "\(results[0]["penid"] as! String)")
+                            self.DeleteFromSingleAllocatedPen()
+                        }
+                    } catch {
+                        
+                    }
+                    
+                    
+                    
+                    msg = "Succesfully Moved To Die."
+                    
+                }
+                else
+                {
+                    msg = dic["Message"] as! String
+                }
+                let alertView = UIAlertController(title: nil, message: msg , preferredStyle: .Alert)
+                alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                self.presentViewController(alertView, animated: true, completion: nil)
+                self.appDel.remove_HUD()
+            }
+            else if (self.str_webservice == "allallocatedpens")
+            {
+                self.InsertToSingleAllocatedPen(dic)
+                
+                if (self.appDel.str_InspectionData == "")
+                {
+                    self.appDel.Show_HUD()
+                }
+                else
+                {
+                    self.appDel.remove_HUD()
+                }
+            }
+    }
+    
+    
+    
+    // MARK: - PickerView Delegates
+    func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int{
+        return 1
+    }
+    
+    // returns the # of rows in each component..
+    func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int{
+        
+        if pickerView == picker_group{
+            return array_Group.count
+        }
+        else if (pickerView == picker_penXX){
+            return array_XX.count
+        }
+        return array_SinglePens.count
+    }
+    
+    
+    func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 57
+    }
+    
+    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView) -> UIView {
+        pickerLabel = (view as! UILabel)
+        if pickerLabel == nil {
+            let frame: CGRect = CGRectMake(10, 0, 250, 65)
+            pickerLabel = UILabel(frame: frame)
+            pickerLabel.textAlignment = .Center
+            pickerLabel.backgroundColor = UIColor.clearColor()
+            pickerLabel.textColor = UIColor.whiteColor()
+            pickerLabel.font = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 30), size: 30.0)
+            //            pickerLabel.font = UIFont(name: "HelveticaNeue", size: 35)
+        }
+        if pickerView == picker_group {
+            pickerLabel.text = array_Group[row] as? String
+        }
+        else if (pickerView == picker_penXX){
+            pickerLabel.text = array_XX[row] as? String
+        }
+        else {
+            pickerLabel.text = array_SinglePens[row] as? String
+        }
+        
+        return pickerLabel
+    }
+    
+    func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
+    {
+        let max1: Int = 5
+        let max2: Int = 0
+        var rowIndex : Int = row
+        
+        if pickerView == picker_group {
+            str_group = array_Group[row] as! String
+        }
+        else if (pickerView == picker_penXX){
+            str_name_XX = array_XX[row] as! String
+        }
+        else if (pickerView == picker_pen1){
+            str_name_1 = array_SinglePens[row] as! String
+        }
+        else if (pickerView == picker_pen2){
+            str_name_2 = array_SinglePens[row] as! String
+        }
+
+        else if (pickerView == picker_pen3){
+            str_name_3 = array_SinglePens[row] as! String
+//            if (row >= 5)
+//            {
+//                rowIndex = 5;
+//                picker_pen3.selectRow(max1, inComponent: 0, animated: true)
+//                picker_pen4.selectRow(max2, inComponent: 0, animated: true)
+//                str_name_4 = array_SinglePens[max2] as! String
+//
+//            }
+//            str_name_3 = array_SinglePens[rowIndex] as! String
+            
+        }
+        else if (pickerView == picker_pen4){
+//            if picker_pen3.selectedRowInComponent(0) >= 5 {
+//                rowIndex = 0
+//                picker_pen4.selectRow(max2, inComponent: 0, animated: true)
+//            }
+            str_name_4 = array_SinglePens[rowIndex] as! String
+        }
+    }
+    
+    //MARK: - AddToDie_btn/ SinglePenService
+    @IBAction func AddToDie_btn(sender: AnyObject) {
+        let alertView = UIAlertController(title: nil, message: "Are You Sure You Want To Die #\(str_group) Animal From \(str_name_XX)-\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)?", preferredStyle: .Alert)
+        alertView.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(action:UIAlertAction) in
+            if self.appDel.checkInternetConnection() {
+                self.appDel.Show_HUD()
+                self.SinglePenService()
+            }
+            else
+            {
+                self.GetOfflineSingleAllocatedPen()
+            }
+            
+        }));
+        self.presentViewController(alertView, animated: true, completion: nil)
+    }
+    
+    
+    func SinglePenService()
+    {
+        str_webservice = "die_animals";
+        let request = NSMutableURLRequest(URL: NSURL(string: "\(Server.local_server)/api/animals/die_animals.php?")!)
+        let postString = "pen_type=Single&noofanimals=1&groupcode=\(str_group)&namexx=\(str_name_XX)&nameyy=\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)&dateadded=\(str_todatDate)&movedby=\(NSUserDefaults.standardUserDefaults().objectForKey("email_username") as! String)&app_id=\(NSUserDefaults.standardUserDefaults().objectForKey("ApplicationIdentifier") as! String)"
+        objwebservice.callServiceCommon(request, postString: postString)
+    }
+    
+    //MARK: - Offline Methods
+    func DeleteFromSingleAllocatedPen()
+    {
+        let fetchRequest = NSFetchRequest(entityName: "SingleAllocatedPen")
+        let predicate = NSPredicate(format: "groupcode = '\(str_group)' and namexx = '\(str_name_XX)' and nameyy = '\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)'")
+        fetchRequest.predicate = predicate
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        do {
+            try self.appDel.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: self.appDel.managedObjectContext)
+            do
+            {
+                try self.appDel.managedObjectContext.save()
+                
+                
+            }
+            catch{}
+        } catch{}
+        
+    }
+    
+    func GetOfflineSingleAllocatedPen()
+    {
+        let fetchRequest = NSFetchRequest(entityName: "SingleAllocatedPen")
+        let predicate = NSPredicate(format: "groupcode = '\(str_group)' and namexx = '\(str_name_XX)' and nameyy = '\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)'")
+        fetchRequest.predicate = predicate
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.fetchBatchSize = 20
+        fetchRequest.resultType = NSFetchRequestResultType.DictionaryResultType
+        do
+        {
+            let results = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest)
+            if results.count > 0 {
+                self.InsertToSingleAddToDie(results[0]["penid"] as! String)
+            }
+            else
+            {
+                let fetchRequest = NSFetchRequest(entityName: "KillTable")
+                let predicate = NSPredicate(format: "groupcode = '\(str_group)' and pennodisp = '\(str_name_XX)-\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)'")
+                fetchRequest.predicate = predicate
+                fetchRequest.returnsObjectsAsFaults = false
+                fetchRequest.fetchBatchSize = 20
+                fetchRequest.resultType = NSFetchRequestResultType.DictionaryResultType
+                
+                do
+                {
+                    let results = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest)
+                    if results.count > 0 {
+                        let alertView = UIAlertController(title: nil, message: "Pen Has Been Listed in the Killed List." , preferredStyle: .Alert)
+                        alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                        self.presentViewController(alertView, animated: true, completion: nil)
+                    }
+                    else
+                    {
+                        let alertView = UIAlertController(title: nil, message: "Pen is Empty." , preferredStyle: .Alert)
+                        alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                        self.presentViewController(alertView, animated: true, completion: nil)
+                    }
+                }catch {}
+            }
+        } catch {
+            
+        }
+    }
+    
+    
+    func InsertToSingleAddToDie(penid: String)
+    {
+        let fetchRequest = NSFetchRequest(entityName: "SingleAddToDie")
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.fetchBatchSize = 20
+        fetchRequest.resultType = NSFetchRequestResultType.DictionaryResultType
+        do {
+            
+            var objCoreTable: SingleAddToDie!
+            objCoreTable = (NSEntityDescription.insertNewObjectForEntityForName("SingleAddToDie", inManagedObjectContext: self.appDel.managedObjectContext) as! SingleAddToDie)
+            objCoreTable.group = "\(str_group)"
+            objCoreTable.namexx = "\(str_name_XX)"
+            objCoreTable.nameyy = "\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)"
+            objCoreTable.date = "\(str_todatDate)"
+            objCoreTable.userid = NSUserDefaults.standardUserDefaults().objectForKey("email_username") as? String
+            do {
+                try self.appDel.managedObjectContext.save()
+                self.DeleteFromOtherTables("KillTable", fullFormat: "groupcode = '\(str_group)' and pennodisp = '\(str_name_XX)-\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)'")
+                
+                self.UpDateAddSectionTableEvent(str_group)
+                
+                self.addToEmptyPen(str_group, grpnamedisp: "\(str_group)-PEN#", namexx: str_name_XX, nameyy: "\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)", pennodisp: "\(str_name_XX)-\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)", penid: penid)
+                
+//                self.DeleteFromOtherTables("EmptyPensTable", fullFormat: "groupcode = '\(str_group)' and pennodisp = '\(str_name_XX)-\(str_name_1)\(str_name_2)\(str_name_3)\(str_name_4)'")
+                
+                self.DeleteFromSingleAllocatedPen()
+                
+                let alertView = UIAlertController(title: nil, message: "Succesfully Moved To Die.", preferredStyle: .Alert)
+                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                self.presentViewController(alertView, animated: true, completion: nil)
+                
+            } catch {
+            }
+            
+        }
+        
+    }
+    
+    
+    //MARK: - update database
+    func UpDateAddSectionTableEvent(groupcode: String!) -> AddSectionTable? {
+        
+        // Define fetch request/predicate/sort descriptors
+        let fetchRequest = NSFetchRequest(entityName: "AddSectionTable")
+        let predicate = NSPredicate(format: "groupcode = '\(groupcode)'", argumentArray: nil)
+        fetchRequest.predicate = predicate
+        
+        
+        
+        // Handle results
+        fetchRequest.returnsObjectsAsFaults = false
+        fetchRequest.fetchBatchSize = 20
+        do {
+            let fetchedResults = try appDel.managedObjectContext.executeFetchRequest(fetchRequest)
+            if fetchedResults.count != 0 {
+                for i in 0 ..< fetchedResults.count {
+                    if let objTable: AddSectionTable = fetchedResults[i] as? AddSectionTable {
+                        var intvaa : Int = Int(objTable.available! as String)!
+                        intvaa = intvaa + 1
+                        objTable.available = String(intvaa)
+                        do {
+                            try self.appDel.managedObjectContext.save()
+                            //                            self.viewWillAppear(false)
+                        } catch {
+                        }
+                        return objTable
+                    }
+                }
+            }
+        }catch let error as NSError {
+            // failure
+            print("Fetch failed: \(error.localizedDescription)")
+        }
+        
+        
+        return nil
+    }
+    
+    func addToEmptyPen(groupcode: String, grpnamedisp: String, namexx: String, nameyy: String, pennodisp: String, penid: String)
+    {
+        let fetchRequest = NSFetchRequest(entityName: "EmptyPensTable")
+        var resultscount : Int = 0
+        fetchRequest.returnsObjectsAsFaults = false
+        do {
+            let results = try appDel.managedObjectContext.executeFetchRequest(fetchRequest)
+            resultscount = results.count
+        }catch  {
+            
+        }
+        
+        
+        var objCoreTable : EmptyPensTable!
+        objCoreTable = (NSEntityDescription.insertNewObjectForEntityForName("EmptyPensTable", inManagedObjectContext: self.appDel.managedObjectContext) as! EmptyPensTable)
+        objCoreTable.id = resultscount+1
+        objCoreTable.groupcode = groupcode
+        objCoreTable.grpnamedisp = grpnamedisp
+        objCoreTable.namexx = namexx
+        objCoreTable.nameyy = nameyy
+        objCoreTable.pennodisp = pennodisp
+        objCoreTable.penid = penid
+        do {
+            try self.appDel.managedObjectContext.save()
+        } catch {}
+    }
+
+    
+    
+    func DeleteFromOtherTables(tableName: String!, fullFormat: String!)
+    {
+        let fetchRequest = NSFetchRequest(entityName: "\(tableName)")
+        let predicate = NSPredicate(format: "\(fullFormat)")
+        fetchRequest.predicate = predicate
+        fetchRequest.returnsObjectsAsFaults = false
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        do {
+            try self.appDel.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: self.appDel.managedObjectContext)
+            do
+            {
+                try self.appDel.managedObjectContext.save()
+                
+                
+            }
+            catch{}
+        } catch{}
+    }
+    
+    
+    func InsertToSingleAllocatedPen(dicTemp: NSMutableDictionary!)
+    {
+        if NSUserDefaults.standardUserDefaults().objectForKey("AllData") != nil
+        {
+            if NSUserDefaults.standardUserDefaults().objectForKey("AllData") as! String == "AllDataSaved"
+            {
+                appDel.Show_HUD()
+                
+                for j in 0 ..< dicTemp["AllocatedPens"]!.count {
+                    let fetchRequest = NSFetchRequest(entityName: "SingleAllocatedPen")
+                    fetchRequest.returnsObjectsAsFaults = false
+                    let predicate = NSPredicate(format: "penid = %@", dicTemp["AllocatedPens"]![j]["penid"] as! String)
+                    fetchRequest.predicate = predicate
+                    let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+                    do {
+                        try self.appDel.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: self.appDel.managedObjectContext)
+                        do
+                        {
+                            try self.appDel.managedObjectContext.save()
+                            print("inside")
+                        }
+                        catch{}
+                    } catch{}
+                    
+                    
+                    for i in 1 ..< 4 {
+                        let fetchRequest = NSFetchRequest(entityName: "EmptyPensTable\(i)")
+                        fetchRequest.returnsObjectsAsFaults = false
+                        let predicate = NSPredicate(format: "penid = %@", dicTemp["AllocatedPens"]![j]["penid"] as! String)
+                        fetchRequest.predicate = predicate
+                        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+                        
+                        do {
+                            try self.appDel.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: self.appDel.managedObjectContext)
+                            do
+                            {
+                                try self.appDel.managedObjectContext.save()
+                                print("inside")
+                            }
+                            catch{}
+                        } catch{}
+                    }
+                    
+                    
+                }
+                
+                
+                
+                
+                var objCoreTable: SingleAllocatedPen!
+                autoreleasepool {
+                    let newArray = dicTemp["AllocatedPens"] as! NSArray
+                    for i in 0 ..< newArray.count {
+                        objCoreTable = (NSEntityDescription.insertNewObjectForEntityForName("SingleAllocatedPen", inManagedObjectContext: self.appDel.managedObjectContext) as! SingleAllocatedPen)
+                        objCoreTable.groupcode = newArray[i]["group_code"] as? String
+                        objCoreTable.namexx = newArray[i]["sp_namexx"] as? String
+                        objCoreTable.nameyy = newArray[i]["sp_nameyy"] as? String
+                        objCoreTable.colorcode = newArray[i]["colorcode"] as? String
+                        objCoreTable.dateadded = newArray[i]["dateadded"] as? String
+                        objCoreTable.entryConvert = self.Databse_dateconvertor(newArray[i]["entrydate"] as? String)
+                        objCoreTable.addedConvert = self.Databse_dateconvertor(newArray[i]["dateadded"] as? String)
+                        objCoreTable.entrydate = newArray[i]["entrydate"] as? String
+                        objCoreTable.groupcodedisp = newArray[i]["groupcodedisp"] as? String
+                        objCoreTable.penid = newArray[i]["penid"] as? String
+                        objCoreTable.pennodisp = newArray[i]["pennodisp"] as? String
+                        objCoreTable.skin_size = newArray[i]["skin_size"] as? String
+                        objCoreTable.recheckcount = newArray[i]["recheckcount"] as? String
+                        objCoreTable.int_recheckcount = objCoreTable.recheckcount?.toInteger()
+                        objCoreTable.state = "NO"
+                        objCoreTable.ispink = newArray[i]["ispink"] as? String
+                        objCoreTable.comment = newArray[i]["comment"] as? String
+                        do {
+                            try self.appDel.managedObjectContext.save()
+                            
+                        } catch {
+                        }
+                    }
+                }
+                
+                
+                
+                
+                let fetchRequest1 = NSFetchRequest(entityName: "TimeStrampTable")
+                fetchRequest1.returnsObjectsAsFaults = false
+                do
+                {
+                    let results = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest1)
+                    if results.count > 0 {
+                        //                    for i in 0 ..< results.count {
+                        if let objTable: TimeStrampTable = results[0] as? TimeStrampTable {
+                            objTable.allocatedPenTym = dicTemp["last_update"] as? String
+                            print(objTable.allocatedPenTym)
+                            do
+                            {
+                                try self.appDel.managedObjectContext.save()
+                                self.appDel.remove_HUD()
+                            }
+                            catch{}
+                        }
+                        //                    }
+                        
+                        
+                    }
+                }
+                catch {}
+                
+            }
+            self.appDel.str_InspectionData = "comeOn"
+        }
+        else
+        {
+            let fetchRequest = NSFetchRequest(entityName: "SingleAllocatedPen")
+            fetchRequest.returnsObjectsAsFaults = false
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+            do {
+                try self.appDel.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: self.appDel.managedObjectContext)
+                do
+                {
+                    try self.appDel.managedObjectContext.save()
+                    
+                    
+                }
+                catch{}
+            } catch{}
+            
+            
+            var objCoreTable: SingleAllocatedPen!
+            autoreleasepool {
+                let newArray = dicTemp["AllocatedPens"] as! NSArray
+                for i in 0 ..< newArray.count {
+                    objCoreTable = (NSEntityDescription.insertNewObjectForEntityForName("SingleAllocatedPen", inManagedObjectContext: self.appDel.managedObjectContext) as! SingleAllocatedPen)
+                    objCoreTable.groupcode = newArray[i]["group_code"] as? String
+                    objCoreTable.namexx = newArray[i]["sp_namexx"] as? String
+                    objCoreTable.nameyy = newArray[i]["sp_nameyy"] as? String
+                    objCoreTable.colorcode = newArray[i]["colorcode"] as? String
+                    objCoreTable.dateadded = newArray[i]["dateadded"] as? String
+                    objCoreTable.entryConvert = self.Databse_dateconvertor(newArray[i]["entrydate"] as? String)
+                    objCoreTable.addedConvert = self.Databse_dateconvertor(newArray[i]["dateadded"] as? String)
+                    objCoreTable.entrydate = newArray[i]["entrydate"] as? String
+                    objCoreTable.groupcodedisp = newArray[i]["groupcodedisp"] as? String
+                    objCoreTable.penid = newArray[i]["penid"] as? String
+                    objCoreTable.pennodisp = newArray[i]["pennodisp"] as? String
+                    objCoreTable.skin_size = newArray[i]["skin_size"] as? String
+                    objCoreTable.recheckcount = newArray[i]["recheckcount"] as? String
+                    objCoreTable.int_recheckcount = objCoreTable.recheckcount?.toInteger()
+                    objCoreTable.state = "NO"
+                    objCoreTable.ispink = newArray[i]["ispink"] as? String
+                    objCoreTable.comment = newArray[i]["comment"] as? String
+                    do {
+                        try self.appDel.managedObjectContext.save()
+                        
+                    } catch {
+                    }
+                }
+            }
+            
+            var objTable: TimeStrampTable!
+            objTable = (NSEntityDescription.insertNewObjectForEntityForName("TimeStrampTable", inManagedObjectContext: self.appDel.managedObjectContext) as! TimeStrampTable)
+            
+            print(dicTemp["last_update"] as! String)
+            
+            objTable.allocatedPenTym = dicTemp["last_update"] as? String
+            objTable.allocatedPenTym = objTable.allocatedPenTym!
+            print(objTable.allocatedPenTym)
+            do {
+                try self.appDel.managedObjectContext.save()
+                self.appDel.remove_HUD()
+            } catch {}
+            
+            
+            self.appDel.str_InspectionData = "comeOn"
+        }
+        
+//        NSUserDefaults.standardUserDefaults().setValue("comeOn", forKey: "str_InspectionData")
+//        NSUserDefaults.standardUserDefaults().synchronize()
+        
+    }
+    
+    
+    func Databse_dateconvertor(datestr: String!) -> NSDate
+    {
+//        let dateForm: NSDateFormatter = NSDateFormatter()
+        let twelveHourLocale: NSLocale = NSLocale(localeIdentifier: "en_US_POSIX")
+        dateForm.locale = twelveHourLocale
+        dateForm.dateFormat = "dd/MM/yyyy"
+        dateForm.timeZone = NSTimeZone(abbreviation: "UTC")
+        let gotDate: NSDate = dateForm.dateFromString(datestr)!
+        return gotDate
+    }
+    
+    //
+    func InsertToSingleAllocatedPen1(dicTemp: NSMutableDictionary!){
+        
+        
+    }
+    
+    
+      /////////
+//    }
+    
+}

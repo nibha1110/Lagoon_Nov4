@@ -1,0 +1,25 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "ec52686b-4894-2c4d-8769-954f7599057f++5831+++3A40770",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "ec52686b-4894-2c4d-8769-954f7599057f++5831+++3A40770" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "ec52686b-4894-2c4d-8769-954f7599057f++5831+++3A40770" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "268DD3E1-3A65-4F94-A8FF-FAE5AE83FA10",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "ec52686b-4894-2c4d-8769-954f7599057f++5831+++3A40770" : "IOS\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Crocodile",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Lagoon_Nov4\/Crocodile.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/repo.mobileprogramming.com\/svn\/Porosus",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ec52686b-4894-2c4d-8769-954f7599057f++5831+++3A40770"
+    }
+  ]
+}
