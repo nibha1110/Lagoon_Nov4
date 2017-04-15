@@ -107,6 +107,7 @@
 		DAB695FA1D2B9D36004E8722 /* Animalgroupdie+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB695F81D2B9D36004E8722 /* Animalgroupdie+CoreDataProperties.swift */; };
 		DAB695FB1D2B9D36004E8722 /* Animalgroupdie.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB695F91D2B9D36004E8722 /* Animalgroupdie.swift */; };
 		DAB7D7461E430693007CF23A /* SPMoveBulkTable+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB7D7441E430693007CF23A /* SPMoveBulkTable+CoreDataProperties.swift */; };
+		DAB9F8871EA1EF4000BE5302 /* HelperClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB9F8861EA1EF4000BE5302 /* HelperClass.swift */; };
 		DADA0DF61CC0EB1600C05B6B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA0DF51CC0EB1600C05B6B /* AppDelegate.swift */; };
 		DADA0DF81CC0EB1600C05B6B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADA0DF71CC0EB1600C05B6B /* ViewController.swift */; };
 		DADA0DFB1CC0EB1600C05B6B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DADA0DF91CC0EB1600C05B6B /* Main.storyboard */; };
@@ -271,6 +272,7 @@
 		DAB695F81D2B9D36004E8722 /* Animalgroupdie+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Animalgroupdie+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DAB695F91D2B9D36004E8722 /* Animalgroupdie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animalgroupdie.swift; sourceTree = "<group>"; };
 		DAB7D7441E430693007CF23A /* SPMoveBulkTable+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SPMoveBulkTable+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DAB9F8861EA1EF4000BE5302 /* HelperClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelperClass.swift; sourceTree = "<group>"; };
 		DADA0DF21CC0EB1600C05B6B /* Crocodile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Crocodile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DADA0DF51CC0EB1600C05B6B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DADA0DF71CC0EB1600C05B6B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -603,6 +605,7 @@
 				DAFAD2541D000DD100337959 /* CustomTableViewCell.swift */,
 				DAFAD2551D000DD100337959 /* CustomTableViewCell.xib */,
 				DA6503F31D7A8BAC00D689B9 /* DataOffline.swift */,
+				DAB9F8861EA1EF4000BE5302 /* HelperClass.swift */,
 				DA4927631D1CF68300435905 /* ModelClasses */,
 				DADA10D61CE1E77F00D3E790 /* Admin */,
 				DA6C93701D19246D00791474 /* MoveSection */,
@@ -998,6 +1001,7 @@
 				DADA0DF61CC0EB1600C05B6B /* AppDelegate.swift in Sources */,
 				DA392C651D547B83007978E6 /* EditCommentView.swift in Sources */,
 				DAB695F61D2B9038004E8722 /* GroupAddToDieTable+CoreDataProperties.swift in Sources */,
+				DAB9F8871EA1EF4000BE5302 /* HelperClass.swift in Sources */,
 				DAFFD34D1D1E52AE004BCE3B /* CoreDataQueryClass.swift in Sources */,
 				DA0C7AB81D2521AC0058269B /* AnimalsCountTable.swift in Sources */,
 				DA0C7AB71D2521AC0058269B /* AnimalsCountTable+CoreDataProperties.swift in Sources */,

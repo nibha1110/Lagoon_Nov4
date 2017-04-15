@@ -48,32 +48,16 @@ class UpdateMoveSelect: UIViewController {
 //
     }
     @IBAction func SystemSelect_Btn(sender: AnyObject) {
-//        if self.appDel.checkInternetConnection() {
             let obj = self.storyboard?.instantiateViewControllerWithIdentifier("UpdateSystemSelectVC") as! UpdateSystemSelectVC
             obj.toPass = toPassToAnother_dic
             self.navigationController?.pushViewController(obj, animated: false)
-//        }
-//        else
-//        {
-//           let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-//            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-//            self.presentViewController(alertView, animated: true, completion: nil)
-//        }
-      
     }
 
     @IBAction func CustomSelect_Btn(sender: AnyObject) {
-//        if self.appDel.checkInternetConnection() {
            let obj = self.storyboard?.instantiateViewControllerWithIdentifier("UpdateCustomSelectVC") as! UpdateCustomSelectVC
             obj.toPass = toPassToAnother_dic
             self.navigationController?.pushViewController(obj, animated: false)
-//        }
-//        else
-//        {
-//            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-//            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-//            self.presentViewController(alertView, animated: true, completion: nil)
-//        }
+
 
     }
     /*

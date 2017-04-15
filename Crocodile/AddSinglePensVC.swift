@@ -957,20 +957,13 @@ class AddSinglePensVC: UIViewController, responseProtocol, CommentConditionProto
     
     //MARK: - update database
     func UpDateTableEvent(groupcode: String!) -> AddSectionTable? {
-        
+        let strPass = toPass_array[8] as! String
+        HelperClass.UpDateTableEvent(strPass)
+        /*
         if (true) {
-            // Define fetch request/predicate/sort descriptors
             let fetchRequest = NSFetchRequest(entityName: "AddSectionTable")
-            
-//            var arraytemp = "\(self.toPass_array[2] as! String)".componentsSeparatedByString("-")
-//            arraytemp = "\(arraytemp[0])".componentsSeparatedByString(" ")
-//            print(arraytemp[0])
-            
             let predicate = NSPredicate(format: "groupcode = '\(toPass_array[8] as! String)'", argumentArray: nil)
             fetchRequest.predicate = predicate
-            
-            
-            // Handle results
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.fetchBatchSize = 20
             do {
@@ -983,7 +976,6 @@ class AddSinglePensVC: UIViewController, responseProtocol, CommentConditionProto
                             objTable.available = String(intvaa)
                             do {
                                 try self.appDel.managedObjectContext.save()
-//                                self.viewWillAppear(false)
                             } catch {
                             }
                             return objTable
@@ -991,13 +983,13 @@ class AddSinglePensVC: UIViewController, responseProtocol, CommentConditionProto
                     }
                 }
             }catch let error as NSError {
-                // failure
                 print("Fetch failed: \(error.localizedDescription)")
             }
         }
         
         
         return nil
+ */
     }
     
     
