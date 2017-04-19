@@ -73,6 +73,13 @@ class AddToKillVC: UIViewController, responseProtocol, CommonClassProtocol {
         
         objDatePicker = CalendarView.instanceFromNib() as! CalendarView
         str_todatDate = "\(objDatePicker.todaydate())"
+        
+        self.callInViewDidLoad()
+    }
+    
+    
+    func callInViewDidLoad()
+    {
         str_todatDate = str_todatDate!.stringByReplacingOccurrencesOfString(" ", withString: "")
         str_todatDate = str_todatDate.stringByReplacingOccurrencesOfString("/", withString: "-")
         
@@ -209,11 +216,7 @@ class AddToKillVC: UIViewController, responseProtocol, CommonClassProtocol {
     
     func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
     {
-        //        var max1: Int = 0
-        //        var max2: Int = 0
-        //        var max3: Int = 0
-        //
-        //        var rowIndex: Int = row
+        
         if pickerView == pickerview1_movePen {
             str_MovePen1 = array_Group[row] as! String
         }
@@ -234,241 +237,6 @@ class AddToKillVC: UIViewController, responseProtocol, CommonClassProtocol {
         else if pickerView == pickerview3_animalMoved {
             str_Animal3 = array_AnimalCount[row] as! String
         }
-        //        if pickerView == pickerview1_movePen {
-        //            str_MovePen1 = array_Group[row] as! NSString
-        //            pickerview2_movePen.selectRow(0, inComponent: 0, animated: true)
-        //            str_MovePen2 = array_SinglePens[0] as! NSString
-        //            pickerview3_movePen.selectRow(0, inComponent: 0, animated: true)
-        //            str_MovePen3 = array_SinglePens[0] as! NSString
-        //            pickerview4_movePen.selectRow(1, inComponent: 0, animated: true)
-        //            str_MovePen4 = array_SinglePens[1] as! NSString
-        //        }
-        //
-        //        //
-        //        if str_MovePen1 == "Y1" {
-        //            max1 = 2
-        //            max2 = 0
-        //            max3 = 9
-        //            if pickerView == pickerview2_movePen {
-        //                if row > max1 {
-        //                    rowIndex = max1
-        //                    pickerView.selectRow(max1, inComponent: 0, animated: true)
-        //                    if pickerview3_movePen.selectedRowInComponent(0) > max2 {
-        //                        pickerview3_movePen.selectRow(max2, inComponent: 0, animated: true)
-        //                        str_MovePen3 = array_SinglePens[max2] as! NSString
-        //                        if pickerview4_movePen.selectedRowInComponent(0) > max3 {
-        //                            pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                            str_MovePen4 = array_SinglePens[max3] as! NSString
-        //                        }
-        //                    }
-        //
-        //                }
-        //                else if row == max1 {
-        //                    pickerview3_movePen.selectRow(max2, inComponent: 0, animated: true)
-        //                    if str_MovePen4.integerValue > max3 {
-        //                        NSLog("...testing..")
-        //                        pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                        str_MovePen4 = array_SinglePens[max3] as! NSString
-        //                    }
-        //                }
-        //                str_MovePen2 = array_SinglePens[rowIndex] as! NSString
-        //            }
-        //            else if pickerView == pickerview3_movePen {
-        //                if pickerview2_movePen.selectedRowInComponent(0) == max1 {
-        //                    if row > max2 {
-        //                        rowIndex = max2
-        //                        pickerView.selectRow(max2, inComponent: 0, animated: true)
-        //                        if pickerview4_movePen.selectedRowInComponent(0) > max3 {
-        //                            pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                            str_MovePen4 = array_SinglePens[max3] as! NSString
-        //                        }
-        //                    }
-        //                }
-        //                str_MovePen3 = array_SinglePens[rowIndex] as! NSString
-        //            }
-        //            else if pickerView == pickerview4_movePen {
-        //                if pickerview2_movePen.selectedRowInComponent(0) == max1 {
-        //                    if pickerview3_movePen.selectedRowInComponent(0) == max2 {
-        //                        if row > max3 {
-        //                            rowIndex = max3
-        //                            pickerView.selectRow(max3, inComponent: 0, animated: true)
-        //                        }
-        //                    }
-        //                }
-        //                str_MovePen4 = array_SinglePens[rowIndex] as! NSString
-        //            }
-        //        }
-        //        else if(str_MovePen1 == "Y2")
-        //        {
-        //            max1 = 0
-        //            max2 = 8
-        //            max3 = 5
-        //            if pickerView == pickerview2_movePen {
-        //                if row > max1 {
-        //                    rowIndex = max1
-        //                    pickerView.selectRow(max1, inComponent: 0, animated: true)
-        //                    if pickerview3_movePen.selectedRowInComponent(0) > max2 {
-        //                        pickerview3_movePen.selectRow(max2, inComponent: 0, animated: true)
-        //                        str_MovePen3 = array_SinglePens[max2] as! NSString
-        //                        if pickerview4_movePen.selectedRowInComponent(0) > max3 {
-        //                            pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                            str_MovePen4 = array_SinglePens[max3] as! NSString
-        //                        }
-        //                    }
-        //                }
-        //                str_MovePen2 = array_SinglePens[rowIndex] as! NSString
-        //            }
-        //            else if pickerView == pickerview3_movePen {
-        //                if pickerview2_movePen.selectedRowInComponent(0) == max1 {
-        //                    if row > max2 {
-        //                        rowIndex = max2
-        //                        pickerView.selectRow(max2, inComponent: 0, animated: true)
-        //                        if pickerview4_movePen.selectedRowInComponent(0) > max3 {
-        //                            pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                            str_MovePen4 = array_SinglePens[max3] as! NSString
-        //                        }
-        //                    }
-        //                }
-        //                if row == max2 {
-        //                    //[pickerview4_movePen selectRow:max3 inComponent:0 animated:YES];
-        //                    if str_MovePen4.integerValue > max3 {
-        //                        NSLog("...testing..")
-        //                        pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //
-        //                    }
-        //                }
-        //                str_MovePen3 = array_SinglePens[rowIndex] as! NSString
-        //            }
-        //            else if pickerView == pickerview4_movePen {
-        //                if pickerview2_movePen.selectedRowInComponent(0) == max1 {
-        //                    if pickerview3_movePen.selectedRowInComponent(0) == max2 {
-        //                        if row > max3 {
-        //                            rowIndex = max3
-        //                            pickerView.selectRow(max3, inComponent: 0, animated: true)
-        //                        }
-        //                    }
-        //                }
-        //                str_MovePen4 = array_SinglePens[rowIndex] as! NSString
-        //            }
-        //        }
-        //        else if(str_MovePen1 == "Y3")
-        //        {
-        //            max1 = 0;
-        //            max2 = 5;
-        //            max3 = 8;
-        //            if (pickerView == pickerview2_movePen)
-        //            {
-        //                if(row > max1){
-        //                    rowIndex = max1
-        //                    pickerView.selectRow(max1, inComponent: 0, animated: true)
-        //                    if pickerview3_movePen.selectedRowInComponent(0) > max2 {
-        //                        pickerview3_movePen.selectRow(max2, inComponent: 0, animated: true)
-        //                        str_MovePen3 = array_SinglePens[max2] as! NSString
-        //                        if pickerview4_movePen.selectedRowInComponent(0) > max3 {
-        //                            pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                            str_MovePen4 = array_SinglePens[max3] as! NSString
-        //                        }
-        //                    }
-        //
-        //                }
-        //                str_MovePen2 = array_SinglePens[rowIndex] as! NSString
-        //
-        //
-        //
-        //            }
-        //            else if (pickerView == pickerview3_movePen)
-        //            {
-        //                if pickerview2_movePen.selectedRowInComponent(0) == max1 {
-        //                    if row > max2 {
-        //                        rowIndex = max2
-        //                        pickerView.selectRow(max2, inComponent: 0, animated: true)
-        //                        if pickerview4_movePen.selectedRowInComponent(0) > max3 {
-        //                            pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                            str_MovePen4 = array_SinglePens[max3] as! NSString
-        //                        }
-        //                    }
-        //                }
-        //
-        //                if row == max2 {
-        //                    if str_MovePen4.integerValue > max3 {
-        //                        NSLog("...testing..")
-        //                        pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                    }
-        //                }
-        //
-        //                str_MovePen3 = array_SinglePens[rowIndex] as! NSString
-        //
-        //            }
-        //            else if pickerView == pickerview4_movePen {
-        //                if pickerview2_movePen.selectedRowInComponent(0) == max1 {
-        //                    if pickerview3_movePen.selectedRowInComponent(0) == max2 {
-        //                        if row > max3 {
-        //                            rowIndex = max3
-        //                            pickerView.selectRow(max3, inComponent: 0, animated: true)
-        //                        }
-        //                    }
-        //                }
-        //                str_MovePen4 = array_SinglePens[rowIndex] as! NSString
-        //            }
-        //        }
-        //        else if(str_MovePen1 == "Y4")
-        //        {
-        //            max1 = 0;
-        //            max2 = 7;
-        //            max3 = 6;
-        //            if pickerView == pickerview2_movePen {
-        //                if row > max1 {
-        //                    rowIndex = max1
-        //                    pickerView.selectRow(max1, inComponent: 0, animated: true)
-        //                    if pickerview3_movePen.selectedRowInComponent(0) > max2 {
-        //                        pickerview3_movePen.selectRow(max2, inComponent: 0, animated: true)
-        //                        str_MovePen3 = array_SinglePens[max2] as! NSString
-        //                        if pickerview4_movePen.selectedRowInComponent(0) > max3 {
-        //                            pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                            str_MovePen4 = array_SinglePens[max3] as! NSString
-        //                        }
-        //                    }
-        //                }
-        //                str_MovePen2 = array_SinglePens[rowIndex] as! NSString
-        //            }
-        //            else if pickerView == pickerview3_movePen {
-        //                if pickerview2_movePen.selectedRowInComponent(0) == max1 {
-        //                    if row > max2 {
-        //                        rowIndex = max2
-        //                        pickerView.selectRow(max2, inComponent: 0, animated: true)
-        //                        if pickerview4_movePen.selectedRowInComponent(0) > max3 {
-        //                            pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                            str_MovePen4 = array_SinglePens[max3] as! NSString
-        //                        }
-        //                    }
-        //                }
-        //                if row == max2 {
-        //                    //[pickerview4_movePen selectRow:max3 inComponent:0 animated:YES];
-        //                    if str_MovePen4.integerValue > max3 {
-        //                        NSLog("...testing..")
-        //                        pickerview4_movePen.selectRow(max3, inComponent: 0, animated: true)
-        //                        
-        //                        
-        //                    }
-        //                }
-        //                
-        //                
-        //                str_MovePen3 = array_SinglePens[rowIndex] as! NSString
-        //                
-        //            }
-        //            else if pickerView == pickerview4_movePen {
-        //                if pickerview2_movePen.selectedRowInComponent(0) == max1 {
-        //                    if pickerview3_movePen.selectedRowInComponent(0) == max2 {
-        //                        if row > max3 {
-        //                            rowIndex = max3
-        //                            pickerView.selectRow(max3, inComponent: 0, animated: true)
-        //                        }
-        //                    }
-        //                }
-        //                str_MovePen4 = array_SinglePens[rowIndex] as! NSString
-        //            }
-        //            
-        //        }
     }
     
     //MARK: - AddToKill Button
@@ -619,12 +387,12 @@ class AddToKillVC: UIViewController, responseProtocol, CommonClassProtocol {
     
     func InsertToAnimalgroupKill()
     {
+
         let fetchRequest = NSFetchRequest(entityName: "Animalgroupkill")
         let predicate = NSPredicate(format: "namexx = '\(str_MovePen2)' AND nameyy = '\(str_MovePen3)' AND groupname = '\(str_MovePen1)'")
         fetchRequest.predicate = predicate
         fetchRequest.returnsObjectsAsFaults = false
         fetchRequest.fetchBatchSize = 20
-//        fetchRequest.resultType = NSFetchRequestResultType.DictionaryResultType
         do {
             let fetchedResults = try appDel.managedObjectContext.executeFetchRequest(fetchRequest)
             if fetchedResults.count != 0 {

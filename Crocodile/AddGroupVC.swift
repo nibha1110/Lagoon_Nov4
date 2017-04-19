@@ -130,8 +130,6 @@ class AddGroupVC: UIViewController, responseProtocol, userlistProtocol {
     
     
     func DoneMethod(EmailUsers: String!) {
-//        HelperClass.DoneMethod(EmailUsers!, view1: self
-        
         if EmailUsers == nil {
             HelperClass.MessageAletOnly("Please Select User.", selfView: self)
         }
@@ -156,24 +154,6 @@ class AddGroupVC: UIViewController, responseProtocol, userlistProtocol {
         
     }
     
-    
-//    func recreatePersistentStore() {
-//        
-//        let stores = appDel.persistentStoreCoordinator.persistentStores
-//        for store: NSPersistentStore in stores {
-//            do {
-//                try appDel.persistentStoreCoordinator.removePersistentStore(store)
-//            }
-//            catch {
-//            }
-//            do {
-//                try NSFileManager.defaultManager().removeItemAtPath(store.URL!.path!)
-//            }
-//            catch {
-//            }
-//        }
-//    }
-//    
     
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
@@ -228,28 +208,6 @@ class AddGroupVC: UIViewController, responseProtocol, userlistProtocol {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        /*
-        if tableView == tabelview_GrpList {
-            let cus_cell = tableView.dequeueReusableCellWithIdentifier("CustomTableViewCell", forIndexPath: indexPath) as! CustomTableViewCell
-            
-            if indexPath.row % 2 == 0 {
-                cus_cell.customImageView.backgroundColor = UIColor.whiteColor()
-            }
-            else {
-                cus_cell.customImageView.backgroundColor = UIColor(red: 241.0 / 255.0, green: 241 / 255.0, blue: 241 / 255.0, alpha: 1.0)
-            }
-            
-            cus_cell.customlabel_left.text = array_List[indexPath.row]["grpnamedisp"] as? String
-            
-            cus_cell.customImg_orange.frame = CGRectMake(275, 8, 192, 56)
-            cus_cell.customlbl_upperImge.frame = CGRectMake(275, 8, 192, 56)
-            cus_cell.customlbl_upperImge.text = array_List[indexPath.row]["pennodisp"] as? String
-            return cus_cell
-            
-        }
-        let cell:UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
-        return cell
-        */
         let cell:UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
         
         //view Backgd
@@ -293,7 +251,6 @@ class AddGroupVC: UIViewController, responseProtocol, userlistProtocol {
         let objVC = self.storyboard?.instantiateViewControllerWithIdentifier("SelectPensVC") as! SelectPensVC
         objVC.toPass = array_List[index].mutableCopy() as! NSMutableDictionary
         self.navigationController?.pushViewController(objVC, animated: false)
-//        self.performSegueWithIdentifier("toselectPen", sender: self)
     }
 
    // MARK: - Navigation

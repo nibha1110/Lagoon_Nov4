@@ -108,4 +108,15 @@ class HelperClass{
         }
         
     }
+    
+    
+    static func fetchRequest_Helper (entityname: String, predicated: NSPredicate) -> NSFetchRequest
+    {
+        let fetchRequest_Helper = NSFetchRequest(entityName: entityname)
+        let predicate = predicated
+        fetchRequest_Helper.predicate = predicate
+        fetchRequest_Helper.returnsObjectsAsFaults = false
+        fetchRequest_Helper.fetchBatchSize = 20
+        return fetchRequest_Helper
+    }
 }
