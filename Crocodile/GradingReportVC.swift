@@ -146,7 +146,7 @@ class GradingReportVC: UIViewController, responseProtocol, userlistProtocol, Cal
                     
                     
                     
-                    setChart(monthstemp as! [String], values: unitTemp as! [Double])
+                    
                 
                 
                     var valueNotZero: String! = "YES"
@@ -158,11 +158,17 @@ class GradingReportVC: UIViewController, responseProtocol, userlistProtocol, Cal
                     
                     
                     if valueNotZero == "YES" {
+                        monthstemp.removeAll()
+                        unitTemp.removeAll()
                         monthstemp.append("There Is No Data For Related Grader")
                         let myDouble = Double("0")
                         unitTemp.append(myDouble!)
-                        setChart1(monthstemp as! [String], values: unitTemp as! [Double])
+                        setChart(monthstemp as! [String], values: unitTemp as! [Double])
                         
+                    }
+                    else
+                    {
+                        setChart(monthstemp as! [String], values: unitTemp as! [Double])
                     }
                 }
                 else
@@ -172,7 +178,7 @@ class GradingReportVC: UIViewController, responseProtocol, userlistProtocol, Cal
                     monthstemp.append("There Is No Data For Related Grader")
                     let myDouble = Double("0")
                     unitTemp.append(myDouble!)
-                    setChart1(monthstemp as! [String], values: unitTemp as! [Double])
+                    setChart(monthstemp as! [String], values: unitTemp as! [Double])
                 }
             }
         }
@@ -395,51 +401,8 @@ class GradingReportVC: UIViewController, responseProtocol, userlistProtocol, Cal
     
     //MARK: - CHART
     func setChart(dataPoints: [String], values: [Double]) {
-        barChartView.noDataText = "There Is No Data For Related Grader"
-        var dataEntries: [BarChartDataEntry] = []
-        
-        autoreleasepool{
-            for i in 0..<dataPoints.count {
-                let dataEntry = BarChartDataEntry(value: values[i], xIndex: i)
-                dataEntries.append(dataEntry)
-            }
-        }
-        
-        let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Grader Added")
-        let chartData = BarChartData(xVals: monthstemp as? [NSObject], dataSet: chartDataSet)
-        barChartView.data = chartData
-        barChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
-        barChartView.xAxis.labelHeight = 80
-        barChartView.descriptionText = ""
-        barChartView.xAxis.labelFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 13), size: 13.0)
-        chartDataSet.valueFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 18), size: 18.0)
-        chartDataSet.colors = [UIColor(red: 6/255, green: 92/255, blue: 142/255, alpha: 1)]
-        //        barChartView.xAxis.labelRotationAngle = 135
+        HelperClass.setBarChartHelper(dataPoints, valuesss: values, barcart: self.barChartView, monthssstemp: monthstemp, labelMessage: "Grader Added", compareMsg: "There Is No Data For Related Grader", nodataStr: "There Is No Data For Related Grader.")
         
     }
-    
-    
-    func setChart1(dataPoints: [String], values: [Double]) {
-        barChartView.noDataText = "There Is No Data For Related Grader"
-        var dataEntries: [BarChartDataEntry] = []
-        
-        autoreleasepool{
-            for i in 0..<dataPoints.count {
-                let dataEntry = BarChartDataEntry(value: values[i], xIndex: i)
-                dataEntries.append(dataEntry)
-            }
-        }
-        
-        let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Grader Added")
-        let chartData = BarChartData(xVals: monthstemp as? [NSObject], dataSet: chartDataSet)
-        barChartView.data = chartData
-        barChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
-        barChartView.xAxis.labelHeight = 80
-        barChartView.descriptionText = ""
-        barChartView.xAxis.labelFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 13), size: 13.0)
-        chartDataSet.valueFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 18), size: 18.0)
-        chartDataSet.colors = [UIColor(red: 6/255, green: 92/255, blue: 142/255, alpha: 1)]
-        chartData.setDrawValues(false)
-    }
-    
+
 }

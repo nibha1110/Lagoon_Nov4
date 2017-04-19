@@ -166,7 +166,7 @@ class AgingReportVC: UIViewController, responseProtocol, userlistProtocol, Calen
                     monthstemp.append("NO DATA")
                     let myDouble = Double("0")
                     unitTemp.append(myDouble!)
-                    setChart1(monthstemp as! [String], values: unitTemp as! [Double])
+                    setChart(monthstemp as! [String], values: unitTemp as! [Double])
                 }
             }
             else
@@ -175,7 +175,7 @@ class AgingReportVC: UIViewController, responseProtocol, userlistProtocol, Calen
                 monthstemp.append("NO DATA")
                 let myDouble = Double("0")
                 unitTemp.append(myDouble!)
-                setChart1(monthstemp as! [String], values: unitTemp as! [Double])
+                setChart(monthstemp as! [String], values: unitTemp as! [Double])
             }
 
         }
@@ -398,51 +398,7 @@ class AgingReportVC: UIViewController, responseProtocol, userlistProtocol, Calen
     
     //MARK: - CHART
     func setChart(dataPoints: [String], values: [Double]) {
-        barChartView.noDataText = "No Data For Related Period."
-        var dataEntries: [BarChartDataEntry] = []
-        
-        autoreleasepool
-        {
-                for i in 0..<dataPoints.count {
-                    let dataEntry = BarChartDataEntry(value: values[i], xIndex: i)
-                    dataEntries.append(dataEntry)
-                }
-        }
-        
-        let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Animals Aging")
-        let chartData = BarChartData(xVals: monthstemp as? [NSObject], dataSet: chartDataSet)
-        barChartView.data = chartData
-        barChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
-        barChartView.xAxis.labelHeight = 80
-        barChartView.descriptionText = ""
-        barChartView.xAxis.labelFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 13), size: 13.0)
-        chartDataSet.valueFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 18), size: 18.0)
-        chartDataSet.colors = [UIColor(red: 6/255, green: 92/255, blue: 142/255, alpha: 1)]
-        //        barChartView.xAxis.labelRotationAngle = 135
-        
-    }
-
-    func setChart1(dataPoints: [String], values: [Double]) {
-        barChartView.noDataText = "No Data For Related Period."
-        var dataEntries: [BarChartDataEntry] = []
-        
-        autoreleasepool{
-            for i in 0..<dataPoints.count {
-                let dataEntry = BarChartDataEntry(value: values[i], xIndex: i)
-                dataEntries.append(dataEntry)
-            }
-        }
-        
-        let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Animals Aging")
-        let chartData = BarChartData(xVals: monthstemp as? [NSObject], dataSet: chartDataSet)
-        barChartView.data = chartData
-        barChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
-        barChartView.xAxis.labelHeight = 80
-        barChartView.descriptionText = ""
-        barChartView.xAxis.labelFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 13), size: 13.0)
-        chartDataSet.valueFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 18), size: 18.0)
-        chartDataSet.colors = [UIColor(red: 6/255, green: 92/255, blue: 142/255, alpha: 1)]
-        chartData.setDrawValues(false)
+        HelperClass.setBarChartHelper(dataPoints, valuesss: values, barcart: self.barChartView, monthssstemp: monthstemp, labelMessage: "Animals Aging", compareMsg: "NO DATA", nodataStr: "No Data For Related Period.")
     }
     
 }

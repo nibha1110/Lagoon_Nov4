@@ -178,27 +178,7 @@ class SPinUseReportVC: UIViewController , responseProtocol, userlistProtocol, Ca
                 self.img_noPenAvailable.hidden = true
             }
             
-            
-            
-            
-            //if network
-            /*
-             str_webservice = "sp_pie_chart_display"
-             dispatch_async(dispatch_get_main_queue()) {
-             var stop: String! = self.textfield_StopDate.text!.stringByReplacingOccurrencesOfString(" ", withString: "")
-             stop = stop.stringByReplacingOccurrencesOfString("/", withString: "-")
-             
-             let postString = "\(Server.local_server)/api/sp_reports/sp_pie_chart_display.php?datetill=\(stop)"
-             let url: NSURL = NSURL(string: postString)!
-             let requestObj: NSURLRequest = NSURLRequest(URL: url)
-             
-             
-             self.webviewObj.loadRequest(requestObj)
-             }
-             */
-            //else no network
-            
-            //            }
+
         }
         else if (str_webservice == "report_sp_use")
         {
@@ -428,47 +408,5 @@ class SPinUseReportVC: UIViewController , responseProtocol, userlistProtocol, Ca
     }
     
     
-    
-    //MARK: - CHART
-    func setChart2(dataPoints: [String], values: [Double]) {
-        
-        var dataEntries: [ChartDataEntry] = []
-        
-        autoreleasepool{
-            for i in 0..<dataPoints.count {
-                let dataEntry = ChartDataEntry(value: values[i], xIndex: i)
-                if values[i] == 0
-                {
-                    
-                }
-                else
-                {
-                    dataEntries.append(dataEntry)
-                }
-            }
-        }
-        
-        let pieChartDataSet = PieChartDataSet(yVals: dataEntries, label: "")
-        let pieChartData = PieChartData(xVals: monthstemp as? [NSObject], dataSet: pieChartDataSet)
-        pieChartView_used.data = pieChartData
-        pieChartView_used.animate(xAxisDuration: 0.8)
-        
-        var colors: [UIColor] = []
-        var color = UIColor(red: 226.0/255.0, green: 98.0/255.0, blue: 15.0/255.0, alpha: 1) //blue
-        colors.append(color)
-        
-        color = UIColor(red: 36.0/255.0, green: 99.0/255.0, blue: 17.0/255.0, alpha: 1) // green
-        colors.append(color)
-        
-        color = UIColor(red: 26.0/255.0, green: 65.0/255.0, blue: 110.0/255.0, alpha: 1) // orange
-        colors.append(color)
-        
-        color = UIColor(red: 255.0/255.0, green: 179.0/255.0, blue: 0.0/255.0, alpha: 1) // yellow
-        colors.append(color)
-        
-        pieChartDataSet.colors = colors
-        pieChartView_used.legend.enabled = false
-        pieChartView_used.descriptionText = ""
-    }
     
 }

@@ -9,10 +9,13 @@
 import Foundation
 import UIKit
 import CoreData
+import Charts
 
 
 class HelperClass{
     static var appDel : AppDelegate! = (UIApplication.sharedApplication().delegate as! AppDelegate)
+    static var barChartView: BarChartView!
+    
     
     //MARK: - Update AddSectionTable
     static func UpDateTableEvent(groupcode: String!) {
@@ -74,5 +77,35 @@ class HelperClass{
         let alertView = UIAlertController(title: nil, message: Message, preferredStyle: .Alert)
         alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
         selfView.presentViewController(alertView, animated: true, completion: nil)
+    }
+    
+    
+    static func setBarChartHelper(dataPointsss: [String], valuesss: [Double], barcart: BarChartView!, monthssstemp: [AnyObject], labelMessage: String, compareMsg: String, nodataStr: String) {
+        barcart.noDataText = nodataStr
+        var dataEntries: [BarChartDataEntry] = []
+        autoreleasepool{
+            for i in 0..<dataPointsss.count {
+                let dataEntry = BarChartDataEntry(value: valuesss[i], xIndex: i)
+                dataEntries.append(dataEntry)
+            }
+        }
+        
+        
+        let chartDataSet = BarChartDataSet(yVals: dataEntries, label: labelMessage)
+        let chartData = BarChartData(xVals: monthssstemp as? [NSObject], dataSet: chartDataSet)
+        if dataPointsss.count < 5 {
+            chartDataSet.barSpace = 0.8
+        }
+        barcart.data = chartData
+        barcart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
+        barcart.descriptionText = ""
+        barcart.xAxis.labelFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 13), size: 13.0)
+        chartDataSet.valueFont = UIFont(descriptor: UIFontDescriptor(name: "HelveticaNeue", size: 18), size: 18.0)
+        
+        chartDataSet.colors = [UIColor(red: 6/255, green: 92/255, blue: 142/255, alpha: 1)]
+        if monthssstemp[0] as! String == compareMsg {
+            chartData.setDrawValues(false)
+        }
+        
     }
 }
