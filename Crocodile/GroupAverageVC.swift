@@ -231,9 +231,7 @@ class GroupAverageVC: UIViewController, responseProtocol, CommonClassProtocol {
         str_TotalPen = "\(str_MovePen2)\(str_MovePen3)"
         
         if str_TotalPen == "000" {
-            let alertView = UIAlertController(title: nil, message: "Invalid Pen", preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly("Invalid Pen", selfView: self)
         }
         else
         {
@@ -273,24 +271,7 @@ class GroupAverageVC: UIViewController, responseProtocol, CommonClassProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     
@@ -299,9 +280,7 @@ class GroupAverageVC: UIViewController, responseProtocol, CommonClassProtocol {
         //        dispatch_async(dispatch_get_main_queue()) {
         if self.str_webservice == "add_grouped_size" {
             
-            let alertView = UIAlertController(title: nil, message: dic["Message"] as? String, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly((dic["Message"] as? String)!, selfView: self)
             self.appDel.remove_HUD()
         }
     

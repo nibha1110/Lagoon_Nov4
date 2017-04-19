@@ -193,24 +193,7 @@ class SingleDieVC: UIViewController, responseProtocol, CommonClassProtocol
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
 
     //MARK: - Webservice Delegate
@@ -250,9 +233,7 @@ class SingleDieVC: UIViewController, responseProtocol, CommonClassProtocol
                 {
                     msg = dic["Message"] as! String
                 }
-                let alertView = UIAlertController(title: nil, message: msg , preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly(msg!, selfView: self)
                 self.appDel.remove_HUD()
             }
             else if (self.str_webservice == "allallocatedpens")
@@ -435,15 +416,11 @@ class SingleDieVC: UIViewController, responseProtocol, CommonClassProtocol
                 {
                     let results = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest)
                     if results.count > 0 {
-                        let alertView = UIAlertController(title: nil, message: "Pen Has Been Listed in the Killed List." , preferredStyle: .Alert)
-                        alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                        self.presentViewController(alertView, animated: true, completion: nil)
+                        HelperClass.MessageAletOnly("Pen Has Been Listed in the Killed List.", selfView: self)
                     }
                     else
                     {
-                        let alertView = UIAlertController(title: nil, message: "Pen is Empty." , preferredStyle: .Alert)
-                        alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                        self.presentViewController(alertView, animated: true, completion: nil)
+                        HelperClass.MessageAletOnly("Pen is Empty.", selfView: self)
                     }
                 }catch {}
             }
@@ -480,9 +457,7 @@ class SingleDieVC: UIViewController, responseProtocol, CommonClassProtocol
                 
                 self.DeleteFromSingleAllocatedPen()
                 
-                let alertView = UIAlertController(title: nil, message: "Succesfully Moved To Die.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Succesfully Moved To Die.", selfView: self)
                 
             } catch {
             }

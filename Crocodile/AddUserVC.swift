@@ -141,9 +141,8 @@ class AddUserVC: UIViewController, responseProtocol {
         self.TextfieldBtnAction(sender)
         if self.appDel.checkInternetConnection() {
             if (textfield_email.text! == "") || (textfield_firstName.text! == "") || (textfield_lastName.text! == "") || (textfield_password.text! == "") {
-                let alertView = UIAlertController(title: nil, message: "All Fields Are Required.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                presentViewController(alertView, animated: true, completion: nil)
+                
+                HelperClass.MessageAletOnly("All Fields Are Required.", selfView: self)
                 
             }
             else if textfield_email.text!.characters.count != 0 && textfield_firstName.text!.characters.count != 0 && textfield_lastName.text!.characters.count != 0 && textfield_password.text!.characters.count != 0
@@ -161,9 +160,7 @@ class AddUserVC: UIViewController, responseProtocol {
         }
         else
         {
-            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
         }
         
         
@@ -183,24 +180,7 @@ class AddUserVC: UIViewController, responseProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     func responseDictionary(dic: NSMutableDictionary) {
@@ -222,16 +202,11 @@ class AddUserVC: UIViewController, responseProtocol {
                 
                 
             }
-//            dispatch_async(dispatch_get_main_queue()) {
-                let alertView = UIAlertController(title: nil, message: msg, preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly(msg, selfView: self)
                 self.appDel.remove_HUD()
-//            }
         }
         else if (str_webservice == "apigetallusers")
         {
-//            dispatch_async(dispatch_get_main_queue()) {
                 let userDefaults = NSUserDefaults.standardUserDefaults()
                 userDefaults.setValue(dic["AllUsers"] as! NSMutableArray, forKey: "UserList")
                 self.appDel.remove_HUD()

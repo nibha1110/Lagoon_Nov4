@@ -123,15 +123,11 @@ class ViewController: UIViewController, UITextFieldDelegate, responseProtocol {
         
         if textFld_email.text!.isEqual("")
         {
-            let alertView = UIAlertController(title: nil, message: "Please Enter E-Mail.", preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly("Please Enter E-Mail.", selfView: self)
         }
         else if textFld_password.text!.isEqual("")
         {
-            let alertView = UIAlertController(title: nil, message: "Please Enter Password.", preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly("Please Enter Password.", selfView: self)
         }
         else
         {
@@ -147,16 +143,14 @@ class ViewController: UIViewController, UITextFieldDelegate, responseProtocol {
                     }
                     else
                     {
-                        let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-                        alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                        self.presentViewController(alertView, animated: true, completion: nil)
+                        HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
                     }
                 }
                 else
                 {
-                    let alertView = UIAlertController(title: nil, message: "Please Enter Valid E-mail Address.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    
+                    HelperClass.MessageAletOnly("Please Enter Valid E-mail Address.", selfView: self)
+                    
                     self.textFld_email.text = "";
                     self.textFld_password.text = "";
                 }
@@ -174,86 +168,22 @@ class ViewController: UIViewController, UITextFieldDelegate, responseProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     
     func responseDictionary(dic: NSMutableDictionary){
         if (str_webservice == "apilogin")
         {
-//            dispatch_async(dispatch_get_main_queue()) {
                 self .ReponseGot(dic)
-//            }
         }
         else if (str_webservice == "apigetallusers")
         {
-//            dispatch_async(dispatch_get_main_queue()) {
                 print(dic)
                 let userDefaults = NSUserDefaults.standardUserDefaults()
                 userDefaults.setValue(dic["AllUsers"] as! NSArray, forKey: "UserList")
                 userDefaults.synchronize()
-               /* if self.appDel.checkInternetConnection() {
-                    self.str_webservice = "confirmkill"
-                    let arraytemp: NSMutableArray! = []
-                    var dictee =  [String:AnyObject]()
-                    for i in 0 ..< dic["AllUsers"]!.count
-                    {
-                        var tempDic  = [String : AnyObject]()
-                        tempDic["Email"] = dic["AllUsers"]![i]["Email"] as? String
-                        tempDic["name"] = dic["AllUsers"]![i]["name"] as? String
-                        tempDic["userid"] = dic["AllUsers"]![i]["userid"] as? String
-                        arraytemp.addObject(tempDic)
-                    }
-                    dictee["userdata"] = arraytemp
-                    print(dictee)
-                    self.objwebservice.post(dictee, url: "http://172.20.20.72/APITEST/getdata.php") { (succeeded: Bool, msg: String) -> () in
-                        
-                        
-                        // Move to the UI thread
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            // Show the alert
-                            if(succeeded) {
-                                let alertView = UIAlertController(title: nil, message: "Sucess", preferredStyle: .Alert)
-                                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                                self.presentViewController(alertView, animated: true, completion: nil)
-                            }
-                            else {
-                                let alertView = UIAlertController(title: nil, message: "Fail", preferredStyle: .Alert)
-                                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                                self.presentViewController(alertView, animated: true, completion: nil)
-                            }
-                        })
-                    }
-                }*/
-//            }
-            
-//                
-//                let searchResults = userListArray.filter {
-//                    let components = $0.componentsSeparatedByString(" ")
-//                    return components[0].containsString(attributeValue)
-//                }
         }
-//        else if (str_webservice == "confirmkill")
-//        {
-//            
-//        }
        
     }
      func LoginService(User_id:String, password:String?)

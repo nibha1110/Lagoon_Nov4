@@ -164,24 +164,7 @@ class UpdateSectionVC: UIViewController, responseProtocol
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     //MARK: - webservice Delegate
@@ -192,9 +175,7 @@ class UpdateSectionVC: UIViewController, responseProtocol
                 {
                     if dic["success"] as! String == "False"
                     {
-                        let alertView = UIAlertController(title: nil, message: "No Pens Present For Matching Criteria.", preferredStyle: .Alert)
-                        alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                        self.presentViewController(alertView, animated: true, completion: nil)
+                        HelperClass.MessageAletOnly("No Pens Present For Matching Criteria.", selfView: self)
                     }
                 }
                 
@@ -277,9 +258,7 @@ class UpdateSectionVC: UIViewController, responseProtocol
             }
             else
             {
-                let alertView = UIAlertController(title: nil, message: "No Pens Present For Matching Criteria." , preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("No Pens Present For Matching Criteria.", selfView: self)
                 
             }
         } catch {

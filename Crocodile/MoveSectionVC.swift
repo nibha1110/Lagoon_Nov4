@@ -624,9 +624,7 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
                         }}}}
             else
             {
-                let alertView = UIAlertController(title: nil, message: "Pen Does Not Exist." , preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Pen Does Not Exist.", selfView: self)
             }
         }catch  {
             
@@ -646,9 +644,7 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
             if fetchedResults.count != 0 {
                     do {
                         try self.appDel.managedObjectContext.save()
-                        let alertView = UIAlertController(title: nil, message: "Successfully Moved To Empty.", preferredStyle: .Alert)
-                        alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                        self.presentViewController(alertView, animated: true, completion: nil)
+                        HelperClass.MessageAletOnly("Successfully Moved To Empty.", selfView: self)
                         
                     } catch {}
 //                }
@@ -664,9 +660,7 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
                 objCoreTable.userid = "\(NSUserDefaults.standardUserDefaults().objectForKey("email_username") as! String)"
                 do {
                     try self.appDel.managedObjectContext.save()
-                    let alertView = UIAlertController(title: nil, message: "Successfully Moved To Empty.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Successfully Moved To Empty.", selfView: self)
                 } catch {
                 }
             }
@@ -682,9 +676,7 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
         str_TotalAnimal = "\(str_Animal1)\(str_Animal2)\(str_Animal3)"
         if (str_TotalAnimal == "000")
         {
-            let alertView = UIAlertController(title: nil, message: "Moving Animal Quantity Should Be Greater Than Zero", preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly("Moving Animal Quantity Should Be Greater Than Zero", selfView: self)
         }
         else {
             if self.appDel.checkInternetConnection() {
@@ -790,9 +782,7 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
             }
             else
             {
-                let alertView = UIAlertController(title: nil, message: "Pen Does Not Exist.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Pen Does Not Exist.", selfView: self)
             }
             
             
@@ -916,24 +906,7 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     //MARK: - Webservice Delegate
@@ -991,12 +964,8 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
                     }
 
                 }
-//                else
-//                {
-                    let alertView = UIAlertController(title: nil, message: dic["Message"] as? String, preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
-//                }
+
+                HelperClass.MessageAletOnly("\(dic["Message"] as? String)", selfView: self)
             }
             else if (self.str_webservice == "empty_move_add")
             {
@@ -1015,9 +984,9 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
                 }
                 else
                 {
-                    let alertView = UIAlertController(title: nil, message: dic["Message"] as? String, preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    
+                    HelperClass.MessageAletOnly("\(dic["Message"] as? String)", selfView: self)
+                    
                 }
             }
             else if (self.str_webservice == "check_grp_count")
@@ -1035,6 +1004,7 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
                 }
                 else
                 {
+                    
                     let alertView = UIAlertController(title: nil, message: dic["Message"] as? String, preferredStyle: .Alert)
                     alertView.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
                     alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(action:UIAlertAction) in
@@ -1057,9 +1027,7 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
                 if dic["success"] as! String == "True" {
                     
                     self.saveToAnimalsCountTable()
-                    let alertView = UIAlertController(title: nil, message: "Animals Moved Successfully.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Animals Moved Successfully.", selfView: self)
                     self.view_moveToPen.hidden = true
                     self.btn_backW.hidden = true
                     
@@ -1067,9 +1035,8 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
                 }
                 else
                 {
-                    let alertView = UIAlertController(title: nil, message: dic["Message"] as? String, preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("\(dic["Message"] as? String)", selfView: self)
+                    
                 }
                 
             }
@@ -1102,9 +1069,8 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
             
             do {
                 try self.appDel.managedObjectContext.save()
-                let alertView = UIAlertController(title: nil, message: "Animals Moved Successfully.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Animals Moved Successfully.", selfView: self)
+                
                 self.view_moveToPen.hidden = true
                 self.btn_backW.hidden = true
                 
@@ -1182,9 +1148,7 @@ class MoveSectionVC: UIViewController , responseProtocol, CommonClassProtocol {
             }
             else
             {
-                let alertView = UIAlertController(title: nil, message: "Selected Number of Animals are Greater Than The Animals Present in the Pen.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Selected Number of Animals are Greater Than The Animals Present in the Pen.", selfView: self)
             }
         }catch let error as NSError {
             // failure

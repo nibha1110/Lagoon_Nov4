@@ -89,9 +89,7 @@ class ForgotVC: UIViewController, UITextFieldDelegate, responseProtocol {
     @IBAction func btn_submit(sender: AnyObject) {
         if txtFld_email.text!.isEqual("")
         {
-            let alertView = UIAlertController(title: nil, message: "Please Enter E-Mail.", preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly("Please Enter E-Mail.", selfView: self)
         }
         else
         {
@@ -109,17 +107,13 @@ class ForgotVC: UIViewController, UITextFieldDelegate, responseProtocol {
                     else
                     {
                         
-                        let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-                        alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                        self.presentViewController(alertView, animated: true, completion: nil)
+                        HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
                     }
                 }
                 else
                 {
 //                    dispatch_async(dispatch_get_main_queue()) {
-                        let alertView = UIAlertController(title: nil, message: "Please Enter Valid E-mail Address.", preferredStyle: .Alert)
-                        alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                        self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Please Enter Valid E-mail Address.", selfView: self)
                         self.txtFld_email.text = "";
                      
 //                    }
@@ -146,24 +140,7 @@ class ForgotVC: UIViewController, UITextFieldDelegate, responseProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
 
     
@@ -173,16 +150,12 @@ class ForgotVC: UIViewController, UITextFieldDelegate, responseProtocol {
 //            dispatch_async(dispatch_get_main_queue()) {
                 if (dic["success"]!.isEqual("False"))
                 {
-                    let alertView = UIAlertController(title: nil, message: "Entered Details Are Invalid or Incorrect\n Please Try Again.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Entered Details Are Invalid or Incorrect\n Please Try Again.", selfView: self)
                 }
                     
                 else if(dic["success"]!.isEqual("True"))
                 {
-                    let alertView = UIAlertController(title: nil, message: "Password Has Been Sent To Your E-mail Id.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Password Has Been Sent To Your E-mail Id.", selfView: self)
                     
                 }
                 self.txtFld_email.resignFirstResponder()

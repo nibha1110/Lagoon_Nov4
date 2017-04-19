@@ -333,9 +333,7 @@ class SPMoveVC: UIViewController, CommonClassProtocol, responseProtocol {
     
     @IBAction func Add_btnAction(sender: AnyObject) {
         if btn_fromPen.titleLabel?.text == "From Pen" || btn_toPen.titleLabel?.text == "To Pen"{
-            let alertView = UIAlertController(title: nil, message: "Please Select Pen.", preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly("Please Select Pen.", selfView: self)
         }
         else
         {
@@ -406,9 +404,7 @@ class SPMoveVC: UIViewController, CommonClassProtocol, responseProtocol {
         }
         else
         {
-            let alertView = UIAlertController(title: nil, message: "Please Select Pens To Move." , preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly("Please Select Pens To Move.", selfView: self)
         }
         
     }
@@ -417,17 +413,7 @@ class SPMoveVC: UIViewController, CommonClassProtocol, responseProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            
-            self.appDel.remove_HUD()
-            
-        }
-        else if (str == "noResponse")
-        {
-            
-            self.appDel.remove_HUD()
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
 
     
@@ -452,9 +438,7 @@ class SPMoveVC: UIViewController, CommonClassProtocol, responseProtocol {
             let results = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest)
             print(results)
             if results.count > 0 {
-                let alertView = UIAlertController(title: nil, message: "You Have Already Added Pen In The List." , preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("You Have Already Added Pen In The List.", selfView: self)
             }
             else
             {
@@ -470,9 +454,7 @@ class SPMoveVC: UIViewController, CommonClassProtocol, responseProtocol {
                     let results1 = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest1)
                     print(results1)
                     if results1.count > 0 {
-                        let alertView = UIAlertController(title: nil, message: "You Have Already Added Pen In The List." , preferredStyle: .Alert)
-                        alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                        self.presentViewController(alertView, animated: true, completion: nil)
+                        HelperClass.MessageAletOnly("You Have Already Added Pen In The List.", selfView: self)
                     }
                     else
                     {
@@ -761,9 +743,7 @@ class SPMoveVC: UIViewController, CommonClassProtocol, responseProtocol {
             let results1 = try self.appDel.managedObjectContext.executeFetchRequest(fetchRequest1)
             print(results1)
             if results1.count > 0 {
-                let alertView = UIAlertController(title: nil, message: "You Have Already Added Pen In The List." , preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("You Have Already Added Pen In The List.", selfView: self)
             }
             else
             {

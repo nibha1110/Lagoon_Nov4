@@ -485,9 +485,7 @@ class GroupDieVC: UIViewController, responseProtocol, CommonClassProtocol {
             alertView.addAction(UIAlertAction(title: "YES", style: .Default, handler: {(action:UIAlertAction) in
                 if (self.str_TotalAnimal == "000")
                 {
-                    let alertView = UIAlertController(title: nil, message: "Animal Quantity Should Be Greater Than Zero", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Animal Quantity Should Be Greater Than Zero", selfView: self)
                 }
                 else
                 {
@@ -526,24 +524,7 @@ class GroupDieVC: UIViewController, responseProtocol, CommonClassProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     //MARK: - Webservice Protocol
@@ -560,9 +541,7 @@ class GroupDieVC: UIViewController, responseProtocol, CommonClassProtocol {
                     msg = dic["Message"] as! String
                 }
                 
-                let alertView = UIAlertController(title: nil, message: msg, preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly(msg, selfView: self)
                self.appDel.remove_HUD()
             }
         appDel.remove_HUD()
@@ -620,33 +599,23 @@ class GroupDieVC: UIViewController, responseProtocol, CommonClassProtocol {
                 var totalanimal : Int = Int(results[results.count-1]["total_animals"] as! String)!
                 
                 if totalanimal == 0 {
-                    let alertView = UIAlertController(title: nil, message: "Pen is Empty." , preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Pen is Empty.", selfView: self)
                 }
                 else if (totalanimal >= Int(str_TotalAnimal as String)!)
                 {
                     totalanimal = totalanimal - Int(str_TotalAnimal as String)!
                     self.UpdateGroupAllocatedPen(String(totalanimal))
-                    let alertView = UIAlertController(title: nil, message: "Successfully Moved To Die.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Successfully Moved To Die.", selfView: self)
                 }
                 else
                 {
-                    let alertView = UIAlertController(title: nil, message: "Animals Moved Are Greater Than Total Animals.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Animals Moved Are Greater Than Total Animals.", selfView: self)
                 }
                 
             }
             else
             {
-//                dispatch_async(dispatch_get_main_queue()) {
-                    let alertView = UIAlertController(title: nil, message: "Entered Pen Does not Exist." , preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
-//                }
+                    HelperClass.MessageAletOnly("Entered Pen Does not Exist.", selfView: self)
                 
             }
         } catch {

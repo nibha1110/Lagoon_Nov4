@@ -82,9 +82,7 @@ class KillReportVC: UIViewController, responseProtocol, userlistProtocol, Calend
         }
         else
         {
-            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
         }
        
     }
@@ -102,24 +100,7 @@ class KillReportVC: UIViewController, responseProtocol, userlistProtocol, Calend
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     //MARK: - Webservice Delegate
@@ -235,9 +216,7 @@ class KillReportVC: UIViewController, responseProtocol, userlistProtocol, Calend
             {
                 msg = "Mail Not Sent."
             }
-                let alertView = UIAlertController(title: nil, message: msg, preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly(msg, selfView: self)
         }
         self.appDel.remove_HUD()
     }
@@ -287,9 +266,7 @@ class KillReportVC: UIViewController, responseProtocol, userlistProtocol, Calend
         
         
         if EmailUsers == nil {
-                let alertView = UIAlertController(title: nil, message: "Please Select User.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Please Select User.", selfView: self)
         }
         else
         {
@@ -309,9 +286,8 @@ class KillReportVC: UIViewController, responseProtocol, userlistProtocol, Calend
             }
             else
             {
-                    let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                
+                    HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
             }
         }
     }

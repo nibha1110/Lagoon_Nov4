@@ -81,9 +81,7 @@ class DieReportVC: UIViewController,responseProtocol, userlistProtocol, Calendar
         }
         else
         {
-            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
         }
     }
     
@@ -111,9 +109,9 @@ class DieReportVC: UIViewController,responseProtocol, userlistProtocol, Calendar
     func DoneMethod(EmailUsers: String!) {
         
         if EmailUsers == nil {
-                let alertView = UIAlertController(title: nil, message: "Please Select User.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+            
+            
+                HelperClass.MessageAletOnly("Please Select User.", selfView: self)
         }
         else
         {
@@ -133,9 +131,7 @@ class DieReportVC: UIViewController,responseProtocol, userlistProtocol, Calendar
             }
             else
             {
-                    let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                 HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
             }
         }
     }
@@ -148,24 +144,7 @@ class DieReportVC: UIViewController,responseProtocol, userlistProtocol, Calendar
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     //MARK: - Webservice Delegate
@@ -263,9 +242,8 @@ class DieReportVC: UIViewController,responseProtocol, userlistProtocol, Calendar
             {
                 msg = "Mail Not Sent."
             }
-                let alertView = UIAlertController(title: nil, message: msg, preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+            
+                HelperClass.MessageAletOnly(msg, selfView: self)
 //            }
         }
 //        dispatch_async(dispatch_get_main_queue()) {

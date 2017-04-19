@@ -7,15 +7,18 @@
 //
 
 import Foundation
+import UIKit
+import CoreData
+
 
 class HelperClass{
+    static var appDel : AppDelegate! = (UIApplication.sharedApplication().delegate as! AppDelegate)
     
-    
-    static func UpDateTableEvent(groupcode: String!) -> AddSectionTable? {
-        
+    //MARK: - Update AddSectionTable
+    static func UpDateTableEvent(groupcode: String!) {
         if (true) {
             let fetchRequest = NSFetchRequest(entityName: "AddSectionTable")
-            let predicate = NSPredicate(format: "groupcode = '\(toPass_array[8] as! String)'", argumentArray: nil)
+            let predicate = NSPredicate(format: "groupcode = '\(groupcode)'", argumentArray: nil)
             fetchRequest.predicate = predicate
             fetchRequest.returnsObjectsAsFaults = false
             fetchRequest.fetchBatchSize = 20
@@ -31,7 +34,7 @@ class HelperClass{
                                 try self.appDel.managedObjectContext.save()
                             } catch {
                             }
-                            return objTable
+                            
                         }
                     }
                 }
@@ -40,8 +43,36 @@ class HelperClass{
                 print("Fetch failed: \(error.localizedDescription)")
             }
         }
-        
-        
-        return nil
+    }
+    
+    //MARK: - NetworkLost
+    static func NetworkLost(str: String!, view1: UIViewController)
+    {
+        if str == "netLost" {
+            
+            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            view1.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            view1.view.userInteractionEnabled = true
+        }
+        else if (str == "noResponse")
+        {
+            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            view1.presentViewController(alertView, animated: true, completion: nil)
+            
+            self.appDel.remove_HUD()
+            view1.view.userInteractionEnabled = true
+        }
+    }
+
+    
+    static func MessageAletOnly(Message: String, selfView: UIViewController)
+    {
+        let alertView = UIAlertController(title: nil, message: Message, preferredStyle: .Alert)
+        alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+        selfView.presentViewController(alertView, animated: true, completion: nil)
     }
 }

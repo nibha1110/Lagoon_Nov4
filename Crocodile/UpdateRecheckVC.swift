@@ -168,24 +168,7 @@ class UpdateRecheckVC: UIViewController, responseProtocol, EditCommentProtocol, 
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     
@@ -260,9 +243,7 @@ class UpdateRecheckVC: UIViewController, responseProtocol, EditCommentProtocol, 
         {
             if (dic["success"] as! String == "False")
             {
-                let alertView = UIAlertController(title: nil, message: "Pen Already Allocated\n Please Select Another Pen", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Pen Already Allocated\n Please Select Another Pen", selfView: self)
             }
             else
             {
@@ -294,21 +275,13 @@ class UpdateRecheckVC: UIViewController, responseProtocol, EditCommentProtocol, 
     
     //MARK:- MoveTo_BtnAction
     @IBAction func MoveTo_BtnAction(sender: AnyObject) {
-//        if self.appDel.checkInternetConnection() {
             self.performSegueWithIdentifier("toUpdateMove", sender: self)
-//        }
-//        else
-//        {
-//            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-//            alertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-//            self.presentViewController(alertView, animated: true, completion: nil)
-//        }
+
     }
     
     //MARK: - Add to Kill List
     @IBAction func AddToKillList(sender: AnyObject) {
         
-            //            dispatch_async(dispatch_get_main_queue()) {
             let alertView = UIAlertController(title: nil, message: "Are You Sure You Want To Add To Kill List?", preferredStyle: .Alert)
             alertView.addAction(UIAlertAction(title: "NO", style: .Cancel, handler: nil))
             alertView.addAction(UIAlertAction(title: "YES", style: .Default, handler: {(action:UIAlertAction) in

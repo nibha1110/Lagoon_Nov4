@@ -51,9 +51,8 @@ class AddOutsideSectionVC: UIViewController, responseProtocol, UITableViewDelega
         }
         else
         {
-            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
+            
         }
         
     }
@@ -90,25 +89,7 @@ class AddOutsideSectionVC: UIViewController, responseProtocol, UITableViewDelega
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     // MARK: - webservice delegate
@@ -200,9 +181,7 @@ class AddOutsideSectionVC: UIViewController, responseProtocol, UITableViewDelega
 
         if (array_List[indexPath.row]["available"] as! String == "0")
         {
-            let alertView = UIAlertController(title: nil, message: "There Is No Empty Pen\n Please Check Another.", preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly("There Is No Empty Pen\n Please Check Another.", selfView: self)
         }
         else if (array_List[indexPath.row]["available"] as! String != "0")
         {

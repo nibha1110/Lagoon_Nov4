@@ -203,24 +203,7 @@ class SelectPensVC: UIViewController, responseProtocol{
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
 
     
@@ -344,9 +327,7 @@ class SelectPensVC: UIViewController, responseProtocol{
                 else
                 {
                     
-                    let alertView = UIAlertController(title: nil, message: "Pen Is Empty.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Pen Is Empty.", selfView: self)
                   }
             }
             else if (self.str_webservice == "api_animals_count")
@@ -599,9 +580,7 @@ class SelectPensVC: UIViewController, responseProtocol{
                         if let objTable: AnimalsCountTable = fetchedResults[i] as? AnimalsCountTable {
                             let intvaa : Int = Int(objTable.total_animals! as String)!
                             if intvaa <= 0 {
-                                let alertView = UIAlertController(title: nil, message: "Pen Is Empty.", preferredStyle: .Alert)
-                                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                                self.presentViewController(alertView, animated: true, completion: nil)
+                                HelperClass.MessageAletOnly("Pen Is Empty.", selfView: self)
                             }
                             else
                             {
@@ -648,9 +627,7 @@ class SelectPensVC: UIViewController, responseProtocol{
                 }
                 else
                 {
-                    let alertView = UIAlertController(title: nil, message: "Entered Pen Does not Exist.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Entered Pen Does not Exist.", selfView: self)
                 }
                 
             }catch let error as NSError {

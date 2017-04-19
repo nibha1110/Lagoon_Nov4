@@ -466,9 +466,7 @@ class LoadToTrailerVC: UIViewController, responseProtocol, CommonClassProtocol {
         alertView.addAction(UIAlertAction(title: "YES", style: .Default, handler: {(action:UIAlertAction) in
             if (self.str_TotalAnimal == "000")
             {
-                let alertView = UIAlertController(title: nil, message: "Animal Quantity Should Be Greater Than Zero", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Animal Quantity Should Be Greater Than Zero", selfView: self)
             }
             else
             {
@@ -477,9 +475,7 @@ class LoadToTrailerVC: UIViewController, responseProtocol, CommonClassProtocol {
                 }
                 else
                 {
-                    let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
                 }
             }
         }));
@@ -559,9 +555,7 @@ class LoadToTrailerVC: UIViewController, responseProtocol, CommonClassProtocol {
                 objCoreTable.offline = "NO"
                 do {
                     try self.appDel.managedObjectContext.save()
-                    let alertView = UIAlertController(title: nil, message: "Hatchlings Have Been Moved Successfully.", preferredStyle: .Alert)
-                    alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self.presentViewController(alertView, animated: true, completion: nil)
+                    HelperClass.MessageAletOnly("Hatchlings Have Been Moved Successfully.", selfView: self)
                 } catch {
                 }
             }
@@ -575,9 +569,7 @@ class LoadToTrailerVC: UIViewController, responseProtocol, CommonClassProtocol {
                         
                         do {
                             try self.appDel.managedObjectContext.save()
-                            let alertView = UIAlertController(title: nil, message: "Hatchlings Have Been Moved Successfully.", preferredStyle: .Alert)
-                            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                            self.presentViewController(alertView, animated: true, completion: nil)
+                            HelperClass.MessageAletOnly("Hatchlings Have Been Moved Successfully.", selfView: self)
                         } catch {
                         }
                     }
@@ -610,24 +602,7 @@ class LoadToTrailerVC: UIViewController, responseProtocol, CommonClassProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     //MARK: - Webservice Delegate
@@ -638,15 +613,11 @@ class LoadToTrailerVC: UIViewController, responseProtocol, CommonClassProtocol {
         {
             if dic["success"] as! String == "True"
             {
-                let alertView = UIAlertController(title: nil, message: "Lot Added To Trailer Successfully.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Lot Added To Trailer Successfully.", selfView: self)
             }
             else
             {
-                let alertView = UIAlertController(title: nil, message: dic["Message"] as? String, preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly((dic["Message"] as? String)!, selfView: self)
             }
         }
         else if self.str_webservice == "move_hatchlings" {
@@ -715,9 +686,7 @@ class LoadToTrailerVC: UIViewController, responseProtocol, CommonClassProtocol {
                 msg = "Hatchlings Not Moved."
             }
             
-            let alertView = UIAlertController(title: nil, message: msg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly(msg, selfView: self)
         }
         else if (self.str_webservice == "api_animals_count")
         {

@@ -281,24 +281,7 @@ class UpdateCustomSelectVC: UIViewController, responseProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     //MARK: - webservice Delegate
@@ -559,9 +542,7 @@ class UpdateCustomSelectVC: UIViewController, responseProtocol {
             }
             else
             {
-                let alertView = UIAlertController(title: nil, message: "This Pen Is Already Allocated.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("This Pen Is Already Allocated.", selfView: self)
             }
             
             // success ...

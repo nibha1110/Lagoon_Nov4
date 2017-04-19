@@ -80,9 +80,7 @@ class TrailerToSpAvailableVC: UIViewController, responseProtocol {
         }
         else
         {
-            let alertView = UIAlertController(title: nil, message: Server.noInternet, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly(Server.noInternet, selfView: self)
         }
         
     }
@@ -349,9 +347,7 @@ class TrailerToSpAvailableVC: UIViewController, responseProtocol {
             }
             else
             {
-                let alertView = UIAlertController(title: nil, message: "\(dic["Message"] as! String)", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("\(dic["Message"] as! String)", selfView: self)
             }
         }
         self.appDel.remove_HUD()
@@ -360,24 +356,7 @@ class TrailerToSpAvailableVC: UIViewController, responseProtocol {
     // MARK: - Webservice NetLost delegate
     func NetworkLost(str: String!)
     {
-        if str == "netLost" {
-            let alertView = UIAlertController(title: nil, message: Server.netLost, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
-        else if (str == "noResponse")
-        {
-            let alertView = UIAlertController(title: nil, message: Server.ErrorMsg, preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
-            
-            self.appDel.remove_HUD()
-            self.view.userInteractionEnabled = true
-        }
+        HelperClass.NetworkLost(str, view1: self)
     }
     
     //MARK: - radioBtnAction
@@ -391,9 +370,7 @@ class TrailerToSpAvailableVC: UIViewController, responseProtocol {
             
             if ((toPass["qty"] as! String).toInteger() < aNames.count)
             {
-                let alertView = UIAlertController(title: nil, message: "Selected Pens are Greater Than Quantity Available.", preferredStyle: .Alert)
-                alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertView, animated: true, completion: nil)
+                HelperClass.MessageAletOnly("Selected Pens are Greater Than Quantity Available.", selfView: self)
             }
             else {
                 let alertView = UIAlertController(title: nil, message: "Are You Sure To Add Selected Pens?", preferredStyle: .Alert)
@@ -418,9 +395,7 @@ class TrailerToSpAvailableVC: UIViewController, responseProtocol {
         }
         else
         {
-            let alertView = UIAlertController(title: nil, message: "Please Select Pen.", preferredStyle: .Alert)
-            alertView.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alertView, animated: true, completion: nil)
+            HelperClass.MessageAletOnly("Please Select Pen.", selfView: self)
         }
     }
     
